@@ -1,4 +1,4 @@
-# Bancada: site com atendimento por IA
+# Kriai: site com atendimento por IA
 
 Site escuro com vídeo de abertura e um atendimento por IA (Claude) que conversa com o cliente, monta o plano,
 mostra o preço "a partir de" e preenche a ficha do pedido ao vivo. Toda mensagem é salva na hora: quem desiste no
