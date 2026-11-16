@@ -11,6 +11,40 @@ export function Logo({ href = "/" }: { href?: string }) {
   );
 }
 
+/**
+ * Cabeçalho padrão de todas as páginas: mesma largura e alinhamento,
+ * para a logo nunca mudar de lugar ao navegar. O conteúdo da direita vai em `children`.
+ */
+export function Topo({ href, children }: { href?: string; children?: React.ReactNode }) {
+  return (
+    <header className="topo">
+      <Logo href={href} />
+      <div className="topo-acoes">
+        {children}
+        <SimboloIA />
+      </div>
+    </header>
+  );
+}
+
+/** Símbolo de IA (brilho de quatro pontas) no canto oposto à logo. Leva para a conversa com a Kria. */
+export function SimboloIA() {
+  return (
+    <Link href="/conversa" className="simbolo-ia" aria-label="Conversar com a Kria, assistente de IA">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+        <path
+          fill="currentColor"
+          d="M10 2.5c.5 4.3 2.7 6.5 7 7-4.3.5-6.5 2.7-7 7-.5-4.3-2.7-6.5-7-7 4.3-.5 6.5-2.7 7-7Z"
+        />
+        <path
+          fill="currentColor"
+          d="M18.5 13.5c.3 2.2 1.3 3.2 3.5 3.5-2.2.3-3.2 1.3-3.5 3.5-.3-2.2-1.3-3.2-3.5-3.5 2.2-.3 3.2-1.3 3.5-3.5Z"
+        />
+      </svg>
+    </Link>
+  );
+}
+
 /** Botão de WhatsApp do estúdio. Some sozinho enquanto marca.whatsapp estiver vazio. */
 export function BotaoWhatsapp({ texto = "WhatsApp", mensagem }: { texto?: string; mensagem?: string }) {
   const href = whatsappDoEstudio(mensagem);

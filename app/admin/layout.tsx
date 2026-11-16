@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Topo } from "@/components/Marca";
 import { marca } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -10,11 +10,7 @@ export const metadata: Metadata = {
 export default function AdminLayout({ children }: LayoutProps<"/admin">) {
   return (
     <div className="adm">
-      <header className="adm-topo">
-        <Link href="/admin" className="adm-marca">
-          {marca.nome} <span className="rotulo">painel</span>
-        </Link>
-      </header>
+      <Topo />
       {children}
     </div>
   );

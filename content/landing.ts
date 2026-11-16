@@ -3,22 +3,19 @@
 // Itens com [SUBSTITUIR] precisam de dado real antes de publicar.
 
 export const landing = {
-  titulo: "Site profissional. Você só paga depois de aprovar.",
-  linhaPreco: "a partir de R$ 397, pronto em 7 dias",
+  titulo: "Seu negócio pronto para vender na internet.",
+  linhaPreco: "site, vídeo, logo e Google, a partir de R$ 147",
   subtitulo: "A Kria entende seu negócio e mostra o preço em 2 minutos.",
   subtituloDestaque: "Uma pessoa da equipe manda a proposta, e você paga a primeira metade só se aprovar.",
   botao: "Montar meu plano com a Kria",
   botaoApoio: "Grátis e sem cadastro. Você vê o preço antes de decidir.",
   provas: ["50% só depois de aprovar", "Preço aberto, sem surpresa", "1 rodada de ajustes inclusa"],
-  autor: "Estúdio de Sergio Damasceno. Cada projeto passa por revisão humana antes da entrega.",
   whatsappMensagem: "Oi! Vim pelo site da Kriai e quero um orçamento.",
 
   modelos: {
     titulo: "Veja como fica o site de quem vende o que você vende",
     texto:
       "Cada modelo nasce do negócio: as cores da barbearia não servem para a confeitaria. O seu sai com a sua cara, o seu preço e o botão de WhatsApp no lugar certo.",
-    aviso:
-      "Modelos de demonstração criados pela Kriai, com fotos do banco gratuito Pexels. Os sites publicados de clientes entram nesta parede com autorização deles.",
     botao: "Quero um desses para o meu negócio",
     botaoApoio: "A Kria pergunta o essencial e mostra o preço",
   },
