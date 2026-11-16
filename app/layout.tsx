@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import { marca } from "@/content/site";
 import { AtendenteFlutuante } from "@/components/AtendenteFlutuante";
@@ -30,7 +31,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Pular para o conteúdo
         </a>
         {children}
-        <AtendenteFlutuante />
+        {/* usePathname suspende em rotas com parâmetro dinâmico (cacheComponents); o Suspense mantém o resto pré-renderizado */}
+        <Suspense fallback={null}>
+          <AtendenteFlutuante />
+        </Suspense>
         <Consentimento />
       </body>
     </html>
