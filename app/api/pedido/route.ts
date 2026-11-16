@@ -1,6 +1,11 @@
+import { after } from "next/server";
 import { consentimento } from "@/content/site";
 import { confirmarPedido, obterConversa } from "@/lib/db";
 import { prontaParaEnviar } from "@/lib/ficha";
+import { processarPedidoEnviado } from "@/lib/notificacao";
+
+// Dá tempo para a avaliação da IA e o e-mail, que rodam depois da resposta ao cliente.
+export const maxDuration = 60;
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -22,6 +27,9 @@ export async function POST(request: Request) {
     if (!prontaParaEnviar(salvo.conversa.ficha)) return Response.json({ erro: "incompleta" }, { status: 422 });
 
     const numero = await confirmarPedido(id, corpo.novidades === true, consentimento.versao);
+    // Depois de responder ao cliente: avalia o lead e avisa você por e-mail.
+    const base = process.env.SITE_URL?.replace(/\/$/, "") || new URL(request.url).origin;
+    after(() => processarPedidoEnviado(id, base));
     return Response.json({ numero });
   } catch (err) {
     console.error("[pedido]", err);

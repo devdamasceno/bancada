@@ -44,7 +44,7 @@ No Supabase, abra **Table Editor > painel_pedidos**. A coluna `situacao` mostra 
 - `app/api/atendimento`: recebe a mensagem, salva, chama o Claude em streaming e devolve texto e ficha aos poucos.
   A IA preenche a ficha chamando a ferramenta `atualizar_ficha`.
 - `app/api/pedido`: confirma o pedido (rascunho vira enviado e ganha número).
-- Modelo padrão: `claude-opus-5-5`, com esforço baixo para responder rápido. Troque por `ANTHROPIC_MODEL`.
+- Modelo padrão: `claude-haiku-5-5` (o mais econômico), com esforço baixo para responder rápido. Troque por `ANTHROPIC_MODEL`.
 - Proteções: 30 mensagens por conversa, 15 por minuto por IP, 2.000 caracteres por mensagem.
 # bancada
 # bancada

@@ -41,7 +41,7 @@ export const servicos: Servico[] = [
     unidade: "",
     inclui: "Site de 1 página (landing page) com botão de WhatsApp, formulário, versão para celular e 1 rodada de ajustes.",
     foraDoPrecoDeEntrada: "Mais páginas, agendamento online, loja virtual, blog, domínio e hospedagem.",
-    prazo: "7 dias",
+    prazo: "3 dias",
     gatilhos: ["site", "landing", "pagina", "loja", "e-commerce", "ecommerce", "agendamento", "cardapio", "portfolio", "blog", "dominio"],
   },
   {
@@ -130,6 +130,7 @@ export const atendimento = {
   enviar: "Enviar",
   jaEntendi: "Já entendi:",
   linkWhatsapp: "Prefiro falar no WhatsApp",
+  whatsappMensagem: "Oi! Vim pelo site da Kriai e prefiro conversar por aqui.",
   pensando: "Pensando…",
   erros: {
     vazio: "Escreva o que você precisa antes de enviar.",

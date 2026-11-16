@@ -13,7 +13,7 @@ export default function Privacidade() {
   return (
     <main className="politica">
       <p>
-        <Link href="/">Voltar ao atendimento</Link>
+        <Link href="/">Voltar ao início</Link>
       </p>
       <h1>Privacidade e cookies</h1>
       <p className="rotulo">Versão {consentimento.versao}</p>
@@ -62,9 +62,6 @@ export default function Privacidade() {
       <ul>
         <li>
           <strong>kriai_consent</strong>: guarda sua escolha de cookies por 1 ano. Necessário.
-        </li>
-        <li>
-          <strong>kriai_intro_vista</strong> (armazenamento local): lembra que você já viu a abertura. Necessário.
         </li>
         <li>
           <strong>kriai_conversa</strong>: código da sua conversa. Enquanto a aba estiver aberta, é necessário. Com

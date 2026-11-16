@@ -6,7 +6,7 @@
 
 export const contexto = {
   /** Como o atendente se apresenta. Vazio = fala em nome do estúdio, sem nome próprio. */
-  nomeAtendente: "",
+  nomeAtendente: "Kria",
 
   /** Quem é o estúdio, em 2 ou 3 frases. */
   sobre:
@@ -39,7 +39,8 @@ export const contexto = {
   perguntasFrequentes: [
     {
       pergunta: "O site fica no meu nome?",
-      resposta: "[SUBSTITUIR] Sim. O domínio é registrado no nome do cliente e o site é dele.",
+      resposta:
+        "O cliente escolhe: o domínio pode ser registrado no nome dele, ou a Kriai registra e cuida de tudo. A gente explica as duas opções na proposta.",
     },
     {
       pergunta: "Precisa pagar mensalidade?",

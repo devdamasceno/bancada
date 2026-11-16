@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import { marca } from "@/content/site";
 import { Consentimento } from "@/components/Consentimento";
-import { CHAVE_INTRO } from "@/lib/chaves";
 import "./globals.css";
 
 const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo", display: "swap" });
@@ -12,28 +11,22 @@ export const viewport = { themeColor: "#0c0f0e", colorScheme: "dark" as const };
 
 export const metadata: Metadata = {
   metadataBase: new URL(`https://${marca.dominio}`),
-  title: { default: `${marca.nome}: fale do seu negócio, eu monto o plano`, template: `%s | ${marca.nome}` },
+  title: { default: `${marca.nome}: site profissional, você só paga depois de aprovar`, template: `%s | ${marca.nome}` },
   description: marca.descricao,
   openGraph: {
-    title: `${marca.nome}: fale do seu negócio, eu monto o plano`,
+    title: `${marca.nome}: site profissional, você só paga depois de aprovar`,
     description: marca.descricao,
     locale: "pt_BR",
     type: "website",
   },
 };
 
-// Roda antes da primeira pintura: decide se a abertura aparece, sem "piscar" para quem já viu.
-const scriptIntro = `try{var q=location.search.indexOf("intro")>-1;if(q||!localStorage.getItem("${CHAVE_INTRO}"))document.documentElement.dataset.intro="1"}catch(e){}`;
-
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="pt-BR" className={`${archivo.variable} ${plexMono.variable}`} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: scriptIntro }} />
-      </head>
       <body>
-        <a href="#mensagem" className="pular">
-          Pular para o atendimento
+        <a href="#conteudo" className="pular">
+          Pular para o conteúdo
         </a>
         {children}
         <Consentimento />

@@ -1,4 +1,5 @@
 -- Banco do atendimento. Cole tudo no Supabase: menu SQL Editor > New query > Run.
+-- (Projeto que já rodou a versão antiga deste arquivo: rode os arquivos 002_ e 003_ desta pasta, em ordem.)
 
 create table if not exists conversas (
   id uuid primary key,
@@ -14,7 +15,11 @@ create table if not exists conversas (
   origem text,
   utm jsonb not null default '{}',
   dispositivo text,
-  visitante text
+  visitante text,
+  avaliacao jsonb,          -- avaliação do lead feita pela IA (área administrativa)
+  avaliada_em timestamptz,
+  notificada_em timestamptz, -- quando o e-mail avisando do lead foi enviado
+  email_cliente_em timestamptz -- quando a confirmação foi enviada ao cliente
 );
 
 create table if not exists mensagens (
@@ -63,7 +68,14 @@ select
   c.dispositivo,
   (select count(*) from mensagens m where m.conversa_id = c.id and m.papel = 'user' and m.texto is not null) as mensagens_do_cliente,
   (select string_agg(case m.papel when 'user' then 'Cliente: ' else 'IA: ' end || m.texto, E'\n' order by m.id)
-     from mensagens m where m.conversa_id = c.id and m.texto is not null) as conversa
+     from mensagens m where m.conversa_id = c.id and m.texto is not null) as conversa,
+  (c.avaliacao ->> 'nota')::int as nota,
+  c.avaliacao ->> 'temperatura' as temperatura,
+  c.avaliacao ->> 'resumo' as resumo,
+  c.avaliacao ->> 'proximo_passo' as proximo_passo,
+  c.criada_em,
+  c.enviada_em,
+  c.notificada_em
 from conversas c
 order by c.atualizada_em desc;
 

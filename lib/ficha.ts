@@ -65,6 +65,8 @@ export function validarAtualizacao(entrada: unknown): Partial<Ficha> | null {
     if (!(c in e)) continue;
     if (typeof e[c] !== "string") return null;
     const v = (e[c] as string).trim().slice(0, c === "observacoes" ? 1000 : 200);
+    // marcação vazada da chamada da ferramenta (ex.: "<parameter name=...>") invalida a entrada; a IA reenvia
+    if (/<\/?[a-z][\w:-]*(\s[^>]*)?>/i.test(v)) return null;
     if (v) saida[c] = v;
   }
   return saida;

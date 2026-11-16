@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { atendimento as t, ficha as tf, marca } from "@/content/site";
+import { atendimento as t, ficha as tf } from "@/content/site";
 import type { EventoAtendimento } from "@/app/api/atendimento/route";
 import { fichaVazia, type Ficha as TFicha } from "@/lib/ficha";
 import { entenderRascunho } from "@/lib/detect";
@@ -10,6 +9,7 @@ import { idVisitante, lerPreferencias } from "@/lib/consent";
 import { registrar } from "@/lib/track";
 import { Demonstracao } from "@/components/Demonstracao";
 import { Ficha } from "@/components/Ficha";
+import { BotaoWhatsapp, Logo } from "@/components/Marca";
 import { pulsar } from "@/components/Fundo";
 import { CHAVE_CONVERSA } from "@/lib/chaves";
 
@@ -32,8 +32,6 @@ function lerIdSalvo() {
     return null;
   }
 }
-
-const linkWhatsapp = marca.whatsapp.replace(/\D/g, "").length >= 10 ? `https://wa.me/55${marca.whatsapp.replace(/\D/g, "")}` : null;
 
 export function Atendimento() {
   const [conversaId, setConversaId] = useState<string | null>(null);
@@ -196,18 +194,11 @@ export function Atendimento() {
   return (
     <div className={conversando ? "app conversando" : "app"}>
       <header className="topo">
-        <Link className="logo" href="/">
-          <i aria-hidden="true" />
-          {marca.nome}
-        </Link>
-        {linkWhatsapp && (
-          <a className="zap" href={linkWhatsapp} target="_blank" rel="noopener">
-            {t.linkWhatsapp}
-          </a>
-        )}
+        <Logo />
+        <BotaoWhatsapp texto={t.linkWhatsapp} mensagem={t.whatsappMensagem} />
       </header>
 
-      <main className="palco" id="atendimento">
+      <main className="palco" id="conteudo">
         <section className="conversa" aria-label="Atendimento">
           {!conversando && (
             <div className="abertura">

@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { FERRAMENTA_FICHA, INSTRUCOES, MODELO } from "@/lib/atendente";
+import { COM_FALLBACK, FERRAMENTA_FICHA, INSTRUCOES, MODELO } from "@/lib/atendente";
 import { anexarMensagens, criarConversa, obterConversa, salvarFicha, type MensagemSalva, type Meta } from "@/lib/db";
 import { mesclar, validarAtualizacao, valorMinimo, type Ficha } from "@/lib/ficha";
 
@@ -140,9 +140,15 @@ export async function POST(request: Request) {
             max_tokens: 4096,
             // conversa de vendas: pouca reflexão, resposta rápida
             output_config: { effort: "low" },
-            // se o modelo recusar por engano, a API tenta de novo em outro modelo
-            betas: ["server-side-fallback-2026-07-01"],
-            fallbacks: "default",
+            // drop_block: o raciocínio salvo fica preso ao prompt em que nasceu. Quando você edita as instruções
+            // (ou troca de modelo), as conversas já abertas descartam esse raciocínio antigo em vez de dar erro 400.
+            thinking: { type: "adaptive", block_binding: { prefix_mismatch_behavior: "drop_block" } },
+            betas: [
+              "thinking-binding-controls-2026-08-01",
+              // se o modelo recusar por engano, a API tenta de novo em outro modelo (não existe no Haiku)
+              ...(COM_FALLBACK ? ["server-side-fallback-2026-07-01"] : []),
+            ],
+            ...(COM_FALLBACK ? { fallbacks: "default" as const } : {}),
             system: [{ type: "text", text: INSTRUCOES, cache_control: { type: "ephemeral" } }],
             cache_control: { type: "ephemeral" },
             tools: [FERRAMENTA_FICHA],
@@ -154,6 +160,12 @@ export async function POST(request: Request) {
           try {
             resposta = await stream.finalMessage();
             falhasJson = 0;
+            if (process.env.NODE_ENV !== "production") {
+              const u = resposta.usage;
+              console.info(
+                `[atendimento] ${resposta.model} · entrada ${u.input_tokens} · cache lido ${u.cache_read_input_tokens ?? 0} · cache gravado ${u.cache_creation_input_tokens ?? 0} · saída ${u.output_tokens}`,
+              );
+            }
           } catch (err) {
             // só repete quando a entrada da ferramenta veio com JSON quebrado; erros da API sobem
             if (err instanceof Anthropic.APIError || falhasJson++ >= 2) throw err;
