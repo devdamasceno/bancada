@@ -42,16 +42,41 @@ export function linkWhatsApp(numero: string, mensagem?: string) {
 
 const ROTULO_TEMPERATURA: Record<Avaliacao["temperatura"], string> = { quente: "🔥 Quente", morno: "🌤 Morno", frio: "❄️ Frio" };
 
-const FONTE = "font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:600px;color:#111;line-height:1.5";
+/* ---------- layout dos e-mails ----------
+   Tabelas e estilos inline: é o que funciona no Gmail, Outlook e Apple Mail. Cores da marca: fita (#e7c75c) e breu. */
+const COR = { fita: "#e7c75c", tintaFita: "#14120a", breu: "#0c0f0e", texto: "#1d211f", apoio: "#5f6763", linha: "#e7e4dc", fundo: "#f2f0ea", zap: "#1faa59" };
+const FONTE = "font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
+
+/** Moldura comum: fundo, faixa da marca, cartão branco e rodapé. `resumo` é o texto de pré-visualização da caixa de entrada. */
+function moldura(conteudo: string, { resumo, rodape }: { resumo: string; rodape?: string }) {
+  return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>${esc(marca.nome)}</title></head>
+<body style="margin:0;padding:0;background:${COR.fundo}">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(resumo)}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${COR.fundo}"><tr><td align="center" style="padding:24px 12px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;${FONTE};color:${COR.texto};font-size:15px;line-height:1.55">
+<tr><td style="background:${COR.breu};padding:18px 28px;border-radius:10px 10px 0 0">
+<span style="display:inline-block;background:${COR.fita};color:${COR.tintaFita};padding:5px 12px 4px;font-weight:900;font-size:15px;letter-spacing:.06em;text-transform:uppercase">${esc(marca.nome)}</span>
+</td></tr>
+<tr><td style="background:#fff;padding:28px;border-radius:0 0 10px 10px">${conteudo}</td></tr>
+${rodape ? `<tr><td style="padding:18px 28px 0;color:${COR.apoio};font-size:12px;line-height:1.5">${rodape}</td></tr>` : ""}
+</table></td></tr></table></body></html>`;
+}
+
+/** Botão que funciona em todo cliente de e-mail (tabela + link com padding). */
+const botao = (href: string, texto: string, cor: string, corTexto = "#fff") =>
+  `<table role="presentation" cellpadding="0" cellspacing="0" style="display:inline-table;margin:0 8px 8px 0"><tr><td style="background:${cor};border-radius:6px"><a href="${href}" style="display:inline-block;padding:12px 20px;color:${corTexto};font-weight:700;font-size:15px;text-decoration:none">${esc(texto)}</a></td></tr></table>`;
+
+const titulo2 = (t: string) =>
+  `<h2 style="margin:28px 0 12px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:${COR.apoio}">${esc(t)}</h2>`;
 const plano = (lead: LeadCompleto) =>
   servicos.filter((s) => lead.ficha.servicos.includes(s.id)).map((s) => s.nome).join(" + ") || "a definir";
 
 function tabelaHtml(linhas: [string, string | undefined][]) {
-  return `<table style="border-collapse:collapse;font-size:14px;margin-bottom:20px">${linhas
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:14px;margin:0 0 8px">${linhas
     .filter(([, v]) => v)
     .map(
       ([k, v]) =>
-        `<tr><td style="padding:4px 12px 4px 0;color:#666;vertical-align:top;white-space:nowrap">${k}</td><td style="padding:4px 0">${esc(v!)}</td></tr>`,
+        `<tr><td style="padding:9px 14px 9px 0;border-bottom:1px solid ${COR.linha};color:${COR.apoio};vertical-align:top;white-space:nowrap;width:120px">${k}</td><td style="padding:9px 0;border-bottom:1px solid ${COR.linha}">${esc(v!)}</td></tr>`,
     )
     .join("")}</table>`;
 }
@@ -61,8 +86,8 @@ function conversaHtml(lead: LeadCompleto, nomeCliente: string) {
   return lead.mensagens
     .map((m) => {
       const cliente = m.papel === "cliente";
-      return `<div style="margin:0 0 8px;padding:8px 12px;border-radius:8px;background:${cliente ? "#eef4ff" : "#f4f4f2"}">
-<div style="font-size:12px;color:#666;margin-bottom:2px">${esc(cliente ? nomeCliente : contexto.nomeAtendente || marca.nome)}</div>
+      return `<div style="margin:0 0 8px;padding:10px 14px;border-radius:8px;border-left:3px solid ${cliente ? COR.fita : COR.linha};background:${cliente ? "#fbf6e3" : "#f6f5f1"};font-size:14px">
+<div style="font-size:12px;font-weight:700;color:${COR.apoio};margin-bottom:2px">${esc(cliente ? nomeCliente : contexto.nomeAtendente || marca.nome)}</div>
 <div style="white-space:pre-wrap">${esc(m.texto)}</div></div>`;
     })
     .join("");
@@ -91,32 +116,32 @@ function emailAviso(lead: LeadCompleto, av: Avaliacao | null, link: string) {
     ["Observações", f.observacoes],
   ];
   const lista = (itens: string[]) =>
-    itens.length ? `<ul style="margin:4px 0 12px;padding-left:20px">${itens.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>` : "";
-  const botaoZap = f.whatsapp
-    ? `<a href="${linkWhatsApp(f.whatsapp, av?.mensagem_sugerida)}" style="display:inline-block;background:#25d366;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:600;margin-right:8px">Responder no WhatsApp</a>`
-    : "";
+    itens.length ? `<ul style="margin:0 0 16px;padding-left:20px;font-size:14px">${itens.map((i) => `<li style="margin:0 0 4px">${esc(i)}</li>`).join("")}</ul>` : "";
+  const botoes =
+    (f.whatsapp ? botao(linkWhatsApp(f.whatsapp, av?.mensagem_sugerida), "Responder no WhatsApp", COR.zap) : "") +
+    botao(link, "Abrir no painel", COR.breu);
 
-  const html = `<div style="${FONTE}">
-<p style="margin:0 0 4px;color:#666;font-size:13px">Novo pedido pelo site · nº ${esc(lead.numero ?? "")}</p>
-<h1 style="margin:0 0 12px;font-size:22px">${esc(quem)}${f.negocio ? ` · ${esc(f.negocio)}` : ""}</h1>
+  const conteudo = `<p style="margin:0 0 4px;color:${COR.apoio};font-size:13px">Novo pedido pelo site · nº ${esc(lead.numero ?? "")}</p>
+<h1 style="margin:0 0 20px;font-size:24px;line-height:1.25">${esc(quem)}${f.negocio ? ` <span style="color:${COR.apoio};font-weight:400">· ${esc(f.negocio)}</span>` : ""}</h1>
 ${
   av
-    ? `<div style="background:#f6f6f4;border-radius:8px;padding:14px 16px;margin-bottom:16px">
-<p style="margin:0 0 6px;font-size:18px"><strong>${ROTULO_TEMPERATURA[av.temperatura]} · ${av.nota}/100</strong></p>
+    ? `<div style="background:${COR.fundo};border-radius:8px;padding:16px 18px;margin:0 0 20px">
+<p style="margin:0 0 8px;font-size:18px;font-weight:800">${ROTULO_TEMPERATURA[av.temperatura]} <span style="display:inline-block;margin-left:6px;padding:2px 8px;border-radius:999px;background:${COR.fita};color:${COR.tintaFita};font-size:14px">${av.nota}/100</span></p>
 <p style="margin:0 0 10px">${esc(av.resumo)}</p>
 <p style="margin:0"><strong>Próximo passo:</strong> ${esc(av.proximo_passo)}</p>
 </div>
-${av.pontos_fortes.length ? `<strong>Pontos fortes</strong>${lista(av.pontos_fortes)}` : ""}
-${av.alertas.length ? `<strong>Alertas</strong>${lista(av.alertas)}` : ""}
-<p style="margin:0 0 4px"><strong>Mensagem sugerida</strong></p>
-<p style="margin:0 0 16px;padding:10px 12px;border-left:3px solid #25d366;background:#f3fbf6">${esc(av.mensagem_sugerida)}</p>`
-    : `<p style="color:#a00">A avaliação automática falhou. Abra o painel para avaliar de novo.</p>`
+${av.pontos_fortes.length ? `<p style="margin:0 0 6px;font-weight:700">Pontos fortes</p>${lista(av.pontos_fortes)}` : ""}
+${av.alertas.length ? `<p style="margin:0 0 6px;font-weight:700">Alertas</p>${lista(av.alertas)}` : ""}
+<p style="margin:0 0 6px;font-weight:700">Mensagem sugerida</p>
+<p style="margin:0 0 20px;padding:12px 14px;border-left:3px solid ${COR.zap};background:#f1faf4;border-radius:0 6px 6px 0">${esc(av.mensagem_sugerida)}</p>`
+    : `<p style="margin:0 0 20px;padding:12px 14px;background:#fdeceb;color:#9b1c13;border-radius:6px">A avaliação automática falhou. Abra o painel para avaliar de novo.</p>`
 }
+<div style="margin:0 0 20px">${botoes}</div>
+${titulo2("Ficha do pedido")}
 ${tabelaHtml(linhas)}
-<p>${botaoZap}<a href="${link}" style="display:inline-block;background:#111;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:600">Abrir no painel</a></p>
-<h2 style="font-size:16px;margin:28px 0 10px">Conversa</h2>
-${conversaHtml(lead, quem)}
-</div>`;
+${titulo2("Conversa")}
+${conversaHtml(lead, quem)}`;
+  const html = moldura(conteudo, { resumo: av ? `${av.nota}/100 · ${av.resumo}` : `Novo pedido de ${quem}` });
 
   const texto = [
     assunto,
@@ -151,18 +176,31 @@ function emailCliente(lead: LeadCompleto) {
     real(marca.email) ? `E-mail: ${marca.email}` : "",
   ].filter(Boolean);
 
-  const html = `<div style="${FONTE}">
-<p style="margin:0 0 16px">${esc(nome)}, recebemos seu pedido. Obrigado por falar com a ${esc(marca.nome)}!</p>
-<p style="margin:0 0 16px">Uma pessoa da nossa equipe vai revisar tudo e mandar a proposta com o valor final em até <strong>${esc(marca.prazoResposta)}</strong>, pelo WhatsApp ou por este e-mail.</p>
+  const passos = contexto.comoFunciona
+    .map(
+      (p, i) =>
+        `<tr><td style="width:34px;padding:0 0 12px;vertical-align:top"><span style="display:inline-block;width:24px;height:24px;line-height:24px;text-align:center;border-radius:999px;background:${COR.fita};color:${COR.tintaFita};font-weight:800;font-size:13px">${i + 1}</span></td><td style="padding:2px 0 12px;font-size:14px">${esc(p)}</td></tr>`,
+    )
+    .join("");
+
+  const conteudo = `<h1 style="margin:0 0 12px;font-size:24px;line-height:1.25">${esc(nome)}, recebemos seu pedido!</h1>
+<p style="margin:0 0 16px">Obrigado por falar com a ${esc(marca.nome)}. Uma pessoa da nossa equipe vai revisar tudo e mandar a proposta com o valor final em até <strong>${esc(marca.prazoResposta)}</strong>, pelo WhatsApp ou por este e-mail.</p>
+<div style="margin:0 0 8px;padding:14px 18px;background:${COR.fundo};border-left:4px solid ${COR.fita};border-radius:0 8px 8px 0">
+<p style="margin:0;font-size:13px;color:${COR.apoio}">Pedido nº ${esc(lead.numero ?? "")}</p>
+<p style="margin:2px 0 0;font-size:17px;font-weight:800">${esc(plano(lead))} <span style="font-weight:400;color:${COR.apoio}">· a partir de ${esc(formatarReais(lead.valorMinimo))}</span></p>
+</div>
+${titulo2("Resumo")}
 ${tabelaHtml(linhas)}
-<p style="margin:0 0 4px"><strong>Como funciona daqui para frente</strong></p>
-<ol style="margin:0 0 16px;padding-left:20px">${contexto.comoFunciona.map((p) => `<li>${esc(p)}</li>`).join("")}</ol>
-<p style="margin:0 0 16px;color:#444;font-size:14px">Os valores acima são "a partir de". O preço final vem na proposta, de acordo com o que você precisa.</p>
-<p style="margin:0 0 16px">Quer mudar ou acrescentar algo? É só responder este e-mail.${contatos.length ? ` Ou fale com a gente: ${esc(contatos.join(" · "))}.` : ""}</p>
-<h2 style="font-size:16px;margin:28px 0 10px">Sua conversa com a gente</h2>
-${conversaHtml(lead, f.nome || "Você")}
-<p style="margin:24px 0 0;color:#888;font-size:12px">Você recebeu este e-mail porque enviou um pedido em ${esc(marca.dominio)}. Seus dados são usados só para preparar o orçamento, como explica nossa política de privacidade: https://${esc(marca.dominio)}/privacidade</p>
-</div>`;
+<p style="margin:0 0 4px;color:${COR.apoio};font-size:13px">Os valores são "a partir de". O preço final vem na proposta, de acordo com o que você precisa.</p>
+${titulo2("Como funciona daqui para frente")}
+<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 8px">${passos}</table>
+<p style="margin:0 0 4px">Quer mudar ou acrescentar algo? É só responder este e-mail.${contatos.length ? ` Ou fale com a gente: ${esc(contatos.join(" · "))}.` : ""}</p>
+${titulo2("Sua conversa com a gente")}
+${conversaHtml(lead, f.nome || "Você")}`;
+  const html = moldura(conteudo, {
+    resumo: `Pedido nº ${lead.numero} recebido. A proposta chega em até ${marca.prazoResposta}.`,
+    rodape: `Você recebeu este e-mail porque enviou um pedido em ${esc(marca.dominio)}. Seus dados são usados só para preparar o orçamento, como explica nossa <a href="https://${esc(marca.dominio)}/privacidade" style="color:${COR.apoio}">política de privacidade</a>.`,
+  });
 
   const texto = [
     `${nome}, recebemos seu pedido. Obrigado por falar com a ${marca.nome}!`,
