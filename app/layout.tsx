@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import { marca } from "@/content/site";
+import { AtendenteFlutuante } from "@/components/AtendenteFlutuante";
 import { Consentimento } from "@/components/Consentimento";
 import "./globals.css";
 
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Pular para o conteúdo
         </a>
         {children}
+        <AtendenteFlutuante />
         <Consentimento />
       </body>
     </html>

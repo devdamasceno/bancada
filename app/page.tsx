@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Barlow_Condensed, Fraunces } from "next/font/google";
 import { contexto } from "@/content/atendente";
-import { landing as t, modelos } from "@/content/landing";
+import { depoimentos, landing as t, modelos } from "@/content/landing";
 import { formatarReais, marca, servicos } from "@/content/site";
 import { BotaoPreferencias } from "@/components/BotaoPreferencias";
 import { Fundo } from "@/components/Fundo";
@@ -167,6 +167,41 @@ export default function Home() {
             <div className="lp-repete">
               <BotaoFita texto={t.modelos.botao} apoio={t.modelos.botaoApoio} />
             </div>
+          </section>
+
+          <section className="lp-secao" aria-labelledby="t-depoimentos">
+            <div className="lp-cabeca">
+              <h2 id="t-depoimentos">{t.depoimentos.titulo}</h2>
+              <p>{t.depoimentos.texto}</p>
+            </div>
+            <ul className="lp-depoimentos">
+              {depoimentos.map((d) => (
+                <li key={d.nome}>
+                  <figure>
+                    <blockquote>
+                      <p>“{d.texto}”</p>
+                    </blockquote>
+                    <figcaption>
+                      <span className="lp-dep-inicial" aria-hidden="true">
+                        {d.nome[0]}
+                      </span>
+                      <span>
+                        <b>{d.nome}</b>
+                        <span>
+                          {d.negocio}, {d.cidade}
+                        </span>
+                      </span>
+                    </figcaption>
+                  </figure>
+                  <span className="lp-dep-servico">
+                    {d.servico}
+                    {d.teste && (
+                      <span className="lp-dep-selo">{t.depoimentos.selo}</span>
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </section>
 
           <section className="lp-secao" aria-labelledby="t-precos">

@@ -31,16 +31,7 @@ export function Topo({ href, children }: { href?: string; children?: React.React
 export function SimboloIA() {
   return (
     <Link href="/conversa" className="simbolo-ia" aria-label="Conversar com a Kria, assistente de IA">
-      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
-        <path
-          fill="currentColor"
-          d="M10 2.5c.5 4.3 2.7 6.5 7 7-4.3.5-6.5 2.7-7 7-.5-4.3-2.7-6.5-7-7 4.3-.5 6.5-2.7 7-7Z"
-        />
-        <path
-          fill="currentColor"
-          d="M18.5 13.5c.3 2.2 1.3 3.2 3.5 3.5-2.2.3-3.2 1.3-3.5 3.5-.3-2.2-1.3-3.2-3.5-3.5 2.2-.3 3.2-1.3 3.5-3.5Z"
-        />
-      </svg>
+      <IconeIA />
     </Link>
   );
 }
@@ -59,5 +50,18 @@ export function BotaoWhatsapp({ texto = "WhatsApp", mensagem }: { texto?: string
       </svg>
       {texto}
     </a>
+  );
+}
+
+/** Ícone de IA: brilho de quatro pontas, grande e pequeno. Usa a cor do texto (currentColor). */
+export function IconeIA({ tamanho = 22 }: { tamanho?: number }) {
+  return (
+    <svg viewBox="0 0 24 24" width={tamanho} height={tamanho} aria-hidden="true" focusable="false">
+      <path fill="currentColor" d="M10 2.5c.5 4.3 2.7 6.5 7 7-4.3.5-6.5 2.7-7 7-.5-4.3-2.7-6.5-7-7 4.3-.5 6.5-2.7 7-7Z" />
+      <path
+        fill="currentColor"
+        d="M18.5 13.5c.3 2.2 1.3 3.2 3.5 3.5-2.2.3-3.2 1.3-3.5 3.5-.3-2.2-1.3-3.2-3.5-3.5 2.2-.3 3.2-1.3 3.5-3.5Z"
+      />
+    </svg>
   );
 }
