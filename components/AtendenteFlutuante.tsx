@@ -15,7 +15,6 @@ export function AtendenteFlutuante() {
       </span>
       <span className="atendente-texto" aria-hidden="true">
         <b>Fale com a Kria</b>
-        <span>Preço em 2 minutos</span>
       </span>
     </Link>
   );

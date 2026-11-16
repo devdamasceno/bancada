@@ -49,13 +49,7 @@ function BotaoFita({ texto, apoio }: { texto: string; apoio: string }) {
   );
 }
 
-function Modelo({
-  m,
-  prioridade,
-}: {
-  m: (typeof modelos)[number];
-  prioridade?: boolean;
-}) {
+function Modelo({ m }: { m: (typeof modelos)[number] }) {
   const foto = (
     <Image
       src={m.foto.src}
@@ -63,7 +57,6 @@ function Modelo({
       width={900}
       height={600}
       sizes="(max-width: 760px) 90vw, 40vw"
-      priority={prioridade}
     />
   );
   return (
@@ -147,7 +140,8 @@ export default function Home() {
                     width={f.w}
                     height={f.h}
                     sizes="(max-width: 860px) 80vw, 34vw"
-                    priority
+                    loading="eager"
+                    fetchPriority={i === 0 ? "high" : "auto"}
                   />
                 </div>
               ))}
@@ -160,8 +154,8 @@ export default function Home() {
               <p>{t.modelos.texto}</p>
             </div>
             <div className="lp-parede">
-              {modelos.map((m, i) => (
-                <Modelo key={m.id} m={m} prioridade={i === 0} />
+              {modelos.map((m) => (
+                <Modelo key={m.id} m={m} />
               ))}
             </div>
             <div className="lp-repete">
