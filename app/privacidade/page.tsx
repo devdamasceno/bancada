@@ -7,6 +7,7 @@ import { Topo } from "@/components/Marca";
 export const metadata: Metadata = {
   title: "Privacidade e cookies",
   description: `Como ${marca.nome} coleta, usa e guarda seus dados.`,
+  alternates: { canonical: "/privacidade" },
 };
 
 // [SUBSTITUIR] Revise este texto com um advogado antes de publicar.

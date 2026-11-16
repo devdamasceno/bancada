@@ -12,15 +12,17 @@ import {
   type LeadCompleto,
 } from "@/lib/db";
 
-// Dois e-mails por pedido enviado, pelo Resend (resend.com):
-//   1. Aviso para você: o lead, a avaliação da IA e a conversa.
+// E-mails pelo Resend (resend.com):
+//   0. Aviso de novo contato, para você: assim que o cliente deixa WhatsApp ou e-mail na conversa,
+//      mesmo sem enviar o pedido. Uma vez por conversa.
+//   1. Aviso de pedido, para você: o lead, a avaliação da IA e a conversa.
 //   2. Confirmação para o cliente (se ele deu e-mail): registro do pedido, próximos passos e cópia da conversa.
 //
 // Variáveis no .env.local:
 //   RESEND_API_KEY   chave da conta Resend
 //   NOTIFICAR_EMAIL  para quem vai o aviso (pode ser mais de um, separados por vírgula). O primeiro
 //                    também recebe as respostas do cliente (reply-to).
-//   EMAIL_REMETENTE  remetente com domínio verificado no Resend, ex.: "Kriai <contato@kriai.com.br>".
+//   EMAIL_REMETENTE  remetente com domínio verificado no Resend, ex.: "Kriai <contato@kriai.online>".
 //                    Sem ele, o Resend usa onboarding@resend.dev, que só entrega para o dono da conta:
 //                    o aviso para você funciona, mas o e-mail ao cliente fica desligado.
 const REMETENTE_TESTE = `${marca.nome} <onboarding@resend.dev>`;
@@ -94,6 +96,76 @@ function conversaHtml(lead: LeadCompleto, nomeCliente: string) {
 }
 const conversaTexto = (lead: LeadCompleto, nomeCliente: string) =>
   lead.mensagens.map((m) => `${m.papel === "cliente" ? nomeCliente : contexto.nomeAtendente || marca.nome}: ${m.texto}`).join("\n\n");
+
+/* ---------- 0. aviso de novo contato (antes do pedido) ---------- */
+
+/** Tem um jeito de falar com o cliente? */
+export const temContato = (f: { whatsapp?: string; email?: string }) => !!f.whatsapp?.trim() || emailValido(f.email);
+
+function emailNovoContato(lead: LeadCompleto, link: string) {
+  const f = lead.ficha;
+  const quem = f.nome || "Sem nome";
+  const assunto = `📇 Novo contato · ${quem}${f.negocio ? ` (${f.negocio})` : ""}`;
+  const linhas: [string, string | undefined][] = [
+    ["WhatsApp", f.whatsapp],
+    ["E-mail", f.email],
+    ["Negócio", f.negocio],
+    ["Cidade", f.cidade],
+    ["Interesse", lead.ficha.servicos.length ? `${plano(lead)} · a partir de ${formatarReais(lead.valorMinimo)}` : undefined],
+    ["Objetivo", f.objetivo],
+    ["Origem", lead.origem ?? undefined],
+  ];
+  const botoes =
+    (f.whatsapp ? botao(linkWhatsApp(f.whatsapp), "Chamar no WhatsApp", COR.zap) : "") + botao(link, "Abrir no painel", COR.breu);
+
+  const conteudo = `<p style="margin:0 0 4px;color:${COR.apoio};font-size:13px">Novo contato no atendimento</p>
+<h1 style="margin:0 0 12px;font-size:24px;line-height:1.25">${esc(quem)}${f.negocio ? ` <span style="color:${COR.apoio};font-weight:400">· ${esc(f.negocio)}</span>` : ""}</h1>
+<p style="margin:0 0 20px;padding:12px 14px;background:${COR.fundo};border-left:4px solid ${COR.fita};border-radius:0 8px 8px 0;font-size:14px">A pessoa deixou um contato, mas <strong>ainda não enviou o pedido</strong>. Se ela enviar, chega o aviso completo com a avaliação da IA.</p>
+<div style="margin:0 0 20px">${botoes}</div>
+${titulo2("Contato")}
+${tabelaHtml(linhas)}
+${titulo2("Conversa até agora")}
+${conversaHtml(lead, quem)}`;
+  const html = moldura(conteudo, { resumo: `${quem} deixou ${f.whatsapp ? "o WhatsApp" : "o e-mail"} no atendimento.` });
+  const texto = [
+    assunto,
+    "A pessoa deixou um contato, mas ainda não enviou o pedido.",
+    tabelaTexto(linhas),
+    `Painel: ${link}`,
+    `--- Conversa até agora ---\n${conversaTexto(lead, quem)}`,
+  ].join("\n\n");
+  return { assunto, html, texto };
+}
+
+/**
+ * Avisa você que chegou um contato novo (WhatsApp ou e-mail na ficha), uma vez por conversa.
+ * Se o pedido já foi enviado, não manda: o aviso completo do pedido cobre. Nunca lança erro.
+ */
+export async function notificarNovoContato(id: string, baseUrl: string) {
+  if (usandoArquivoLocal()) return false;
+  const para = destinatariosAviso();
+  if (!para.length) return false;
+  try {
+    const lead = await obterLead(id);
+    if (!lead || lead.situacao === "enviado" || !temContato(lead.ficha)) return false;
+    if (!(await reservarEmail(id, "contato_avisado_em"))) return false;
+    try {
+      const ok = await enviar({
+        para,
+        ...emailNovoContato(lead, `${baseUrl}/admin/${id}`),
+        responderPara: emailValido(lead.ficha.email) ? lead.ficha.email!.trim() : undefined,
+      });
+      if (!ok) await liberarEmail(id, "contato_avisado_em");
+      return ok;
+    } catch (err) {
+      await liberarEmail(id, "contato_avisado_em");
+      throw err;
+    }
+  } catch (err) {
+    console.error("[email novo contato]", id, err);
+    return false;
+  }
+}
 
 /* ---------- 1. aviso para você ---------- */
 

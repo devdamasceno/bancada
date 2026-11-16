@@ -1,7 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { after } from "next/server";
 import { COM_FALLBACK, FERRAMENTA_FICHA, INSTRUCOES, MODELO } from "@/lib/atendente";
 import { anexarMensagens, criarConversa, obterConversa, salvarFicha, type MensagemSalva, type Meta } from "@/lib/db";
 import { mesclar, validarAtualizacao, valorMinimo, type Ficha } from "@/lib/ficha";
+import { notificarNovoContato, temContato } from "@/lib/notificacao";
 
 // Vercel: dá tempo para a IA terminar a resposta.
 export const maxDuration = 60;
@@ -70,6 +72,16 @@ export async function POST(request: Request) {
   if (!UUID.test(id) || !mensagem) return Response.json({ erro: "dados" }, { status: 400 });
 
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
+  const base = process.env.SITE_URL?.replace(/\/$/, "") || new URL(request.url).origin;
+
+  // O aviso de novo contato roda depois da resposta; o after() segura a função até ele terminar.
+  let fimDaConversa: () => void = () => {};
+  const conversaTerminou = new Promise<void>((ok) => (fimDaConversa = ok));
+  let avisoContato: Promise<unknown> | null = null;
+  after(async () => {
+    await conversaTerminou;
+    await avisoContato;
+  });
 
   const corrente = new ReadableStream<Uint8Array>({
     async start(controller) {
@@ -208,8 +220,11 @@ export async function POST(request: Request) {
             ficha = mesclar(ficha, novo);
             resultados.push({ type: "tool_result", tool_use_id: chamada.id, content: "Ficha atualizada." });
           }
+          const tinhaContato = temContato(salvo.conversa.ficha) || avisoContato !== null;
           await salvarFicha(id, ficha);
           enviar({ tipo: "ficha", ficha, valor: valorMinimo(ficha) });
+          // primeiro WhatsApp ou e-mail na conversa: avisa você por e-mail (uma vez só, controlado no banco)
+          if (!tinhaContato && temContato(ficha)) avisoContato = notificarNovoContato(id, base);
 
           historico.push({ role: "user", content: resultados });
           await anexarMensagens(id, [daIa, { papel: "user", conteudo: resultados, texto: null }]);
@@ -221,6 +236,7 @@ export async function POST(request: Request) {
         enviar({ tipo: "erro", codigo: "servidor" });
       } finally {
         if (aberto) controller.close();
+        fimDaConversa();
       }
     },
   });

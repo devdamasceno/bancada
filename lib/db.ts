@@ -323,8 +323,11 @@ export async function salvarAvaliacao(id: string, avaliacao: Avaliacao) {
   falhou("salvar a avaliação", error);
 }
 
-/** Qual e-mail: o aviso para você (notificada_em) ou a confirmação para o cliente (email_cliente_em). */
-export type CampoEmail = "notificada_em" | "email_cliente_em";
+/**
+ * Qual e-mail: o aviso de pedido para você (notificada_em), a confirmação para o cliente (email_cliente_em)
+ * ou o aviso de novo contato, antes do pedido (contato_avisado_em, supabase/004_aviso_contato.sql).
+ */
+export type CampoEmail = "notificada_em" | "email_cliente_em" | "contato_avisado_em";
 
 /**
  * Reserva o envio de um e-mail deste lead. Devolve true só para quem conseguiu reservar,

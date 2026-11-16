@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Barlow_Condensed, Fraunces } from "next/font/google";
 import { contexto } from "@/content/atendente";
 import { depoimentos, landing as t, modelos } from "@/content/landing";
+import { seo } from "@/content/seo";
 import { formatarReais, marca, servicos } from "@/content/site";
 import { BotaoPreferencias } from "@/components/BotaoPreferencias";
 import { Fundo } from "@/components/Fundo";
@@ -39,6 +40,73 @@ const fotosHero = [
     alt: "Barbeiro com as mãos tatuadas mexendo no celular ao lado da cadeira da barbearia",
   },
 ];
+
+/**
+ * Dados estruturados (schema.org) para o Google entender quem é a empresa, o que vende, por quanto,
+ * e mostrar as perguntas frequentes direto no resultado da busca.
+ */
+function dadosEstruturados(duvidas: { pergunta: string; resposta: string }[]) {
+  const url = `https://${marca.dominio}`;
+  const grafo: Record<string, unknown>[] = [
+    {
+      "@type": "WebSite",
+      "@id": `${url}/#site`,
+      url,
+      name: marca.nome,
+      inLanguage: "pt-BR",
+      publisher: { "@id": `${url}/#empresa` },
+    },
+    {
+      "@type": "ProfessionalService",
+      "@id": `${url}/#empresa`,
+      name: marca.nome,
+      url,
+      logo: `${url}/icon.svg`,
+      image: `${url}/opengraph-image`,
+      description: seo.descricao,
+      areaServed: { "@type": "Country", name: seo.area },
+      priceRange: `${formatarReais(Math.min(...servicos.map((s) => s.aPartirDe)))}+`,
+      ...(real(marca.email) ? { email: marca.email } : {}),
+      ...(marca.whatsapp
+        ? { telephone: `+55${marca.whatsapp.replace(/\D/g, "")}` }
+        : {}),
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Serviços",
+        itemListElement: servicos.map((s) => ({
+          "@type": "Offer",
+          priceCurrency: "BRL",
+          price: s.aPartirDe,
+          priceSpecification: {
+            "@type": "PriceSpecification",
+            minPrice: s.aPartirDe,
+            priceCurrency: "BRL",
+          },
+          itemOffered: {
+            "@type": "Service",
+            name: s.nome,
+            description: s.inclui,
+            areaServed: seo.area,
+          },
+        })),
+      },
+    },
+  ];
+  if (duvidas.length)
+    grafo.push({
+      "@type": "FAQPage",
+      mainEntity: duvidas.map((d) => ({
+        "@type": "Question",
+        name: d.pergunta,
+        acceptedAnswer: { "@type": "Answer", text: d.resposta },
+      })),
+    });
+  // escapa "<" para o JSON não fechar a tag <script> por engano
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@graph": grafo,
+  }).replace(/</g, "\\u003c");
+}
 
 function BotaoFita({ texto, apoio }: { texto: string; apoio: string }) {
   return (
@@ -105,6 +173,10 @@ export default function Home() {
   return (
     <>
       <Fundo />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: dadosEstruturados(duvidas) }}
+      />
       <div className={`lp ${fraunces.variable} ${barlow.variable}`}>
         <Topo>
           <BotaoWhatsapp mensagem={t.whatsappMensagem} />

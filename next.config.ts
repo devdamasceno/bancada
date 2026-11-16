@@ -19,6 +19,17 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  // Endereço oficial com www: quem digitar kriai.online (sem www) vai para www.kriai.online, mantendo o caminho.
+  async redirects() {
+    return [
+      {
+        source: "/:caminho*",
+        has: [{ type: "host", value: "kriai.online" }],
+        destination: "https://www.kriai.online/:caminho*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

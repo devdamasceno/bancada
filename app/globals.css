@@ -1896,3 +1896,49 @@
     transition: none;
   }
 }
+
+/* ---------- carregamento entre páginas (app/loading.tsx): logo em fita pulsando ---------- */
+.carregando {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  background: var(--breu);
+}
+.carregando-logo {
+  display: block;
+  padding: 0.4rem 1.2rem 0.32rem;
+  background: var(--fita);
+  color: var(--tinta-fita);
+  font-weight: 900;
+  font-stretch: 125%;
+  font-size: 1.6rem;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  clip-path: polygon(0 8%, 4% 0, 8% 10%, 100% 4%, 97% 30%, 100% 55%, 96% 80%, 100% 100%, 6% 94%, 0 100%, 3% 70%, 0 45%, 3% 22%);
+  transform: rotate(-2deg);
+  animation: carregando-pulso 1.1s ease-in-out infinite;
+}
+@keyframes carregando-pulso {
+  0%,
+  100% {
+    transform: rotate(-2deg) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: rotate(-2deg) scale(1.08);
+    opacity: 0.6;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .carregando-logo {
+    animation: carregando-respira 1.6s ease-in-out infinite;
+  }
+  @keyframes carregando-respira {
+    50% {
+      opacity: 0.55;
+    }
+  }
+}

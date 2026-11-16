@@ -19,7 +19,8 @@ create table if not exists conversas (
   avaliacao jsonb,          -- avaliação do lead feita pela IA (área administrativa)
   avaliada_em timestamptz,
   notificada_em timestamptz, -- quando o e-mail avisando do lead foi enviado
-  email_cliente_em timestamptz -- quando a confirmação foi enviada ao cliente
+  email_cliente_em timestamptz, -- quando a confirmação foi enviada ao cliente
+  contato_avisado_em timestamptz -- quando o aviso de novo contato (antes do pedido) foi enviado
 );
 
 create table if not exists mensagens (

@@ -3,14 +3,13 @@
 
 export const marca = {
   nome: "Kriai",
-  dominio: "kriai.online",
+  dominio: "www.kriai.online",
   descricao:
     "Fale do seu negócio e receba na hora um plano com site, vídeo, imagem, edição ou Google, e quanto custa.",
-  whatsapp: "", // [SUBSTITUIR] só números com DDD, ex.: 11912345678. Vazio esconde o link.
-  email: "[SUBSTITUIR] contato@seudominio.com.br",
-  cnpj: "[SUBSTITUIR] 00.000.000/0001-00",
-  cidade: "[SUBSTITUIR] Cidade/UF",
-  prazoResposta: "1 dia útil", // [SUBSTITUIR] confirme o prazo real
+  whatsapp: "(32) 988039801", // [SUBSTITUIR] só números com DDD, ex.: 11912345678. Vazio esconde o link.
+  email: "contato@kriai.online",
+  cidade: "Juiz de Fora/MG",
+  prazoResposta: "15 minutos", // [SUBSTITUIR] confirme o prazo real
 };
 
 /* ---------- serviços e preços ---------- */
