@@ -9,7 +9,7 @@ import { idVisitante, lerPreferencias } from "@/lib/consent";
 import { registrar } from "@/lib/track";
 import { Demonstracao } from "@/components/Demonstracao";
 import { Ficha } from "@/components/Ficha";
-import { BotaoWhatsapp, Topo } from "@/components/Marca";
+import { Topo } from "@/components/Marca";
 import { pulsar } from "@/components/Fundo";
 import { CHAVE_CONVERSA } from "@/lib/chaves";
 
@@ -193,9 +193,7 @@ export function Atendimento() {
 
   return (
     <div className={conversando ? "app conversando" : "app"}>
-      <Topo>
-        <BotaoWhatsapp texto={t.linkWhatsapp} mensagem={t.whatsappMensagem} />
-      </Topo>
+      <Topo />
 
       <main className="palco" id="conteudo">
         <section className="conversa" aria-label="Atendimento">

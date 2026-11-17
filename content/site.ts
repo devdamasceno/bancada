@@ -128,8 +128,6 @@ export const atendimento = {
   dica: "Enter envia",
   enviar: "Enviar",
   jaEntendi: "Já entendi:",
-  linkWhatsapp: "Prefiro falar no WhatsApp",
-  whatsappMensagem: "Oi! Vim pelo site da Kriai e prefiro conversar por aqui.",
   pensando: "Pensando…",
   erros: {
     vazio: "Escreva o que você precisa antes de enviar.",

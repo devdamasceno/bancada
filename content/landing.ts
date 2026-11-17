@@ -28,7 +28,7 @@ export const landing = {
   depoimentos: {
     titulo: "Quem já tirou o negócio do papel",
     texto: "O que dizem os donos de pequenos negócios que passaram pela Kria.",
-    selo: "exemplo",
+    selo: "Via google",
   },
 
   precos: {
