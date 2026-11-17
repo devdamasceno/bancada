@@ -178,9 +178,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: dadosEstruturados(duvidas) }}
       />
       <div className={`lp ${fraunces.variable} ${barlow.variable}`}>
-        <Topo>
-          <BotaoWhatsapp mensagem={t.whatsappMensagem} />
-        </Topo>
+        <Topo />
 
         <main id="conteudo">
           <section className="lp-hero" aria-labelledby="titulo">
