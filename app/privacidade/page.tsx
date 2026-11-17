@@ -24,7 +24,7 @@ export default function Privacidade() {
 
         <h2>Quem cuida dos seus dados</h2>
         <p>
-          {marca.nome}, CNPJ {marca.cnpj}, {marca.cidade}. Para pedir acesso,
+          {marca.nome}, {marca.cnpj && `CNPJ ${marca.cnpj}, `}{marca.cidade}. Para pedir acesso,
           correção ou exclusão dos seus dados, escreva para {marca.email}.
           Respondemos em até 15 dias, como prevê a LGPD (Lei 13.709/2018).
         </p>

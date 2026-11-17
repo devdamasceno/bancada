@@ -8,6 +8,7 @@ export const marca = {
     "Fale do seu negócio e receba na hora um plano com site, vídeo, imagem, edição ou Google, e quanto custa.",
   whatsapp: "(32) 988039801", // [SUBSTITUIR] só números com DDD, ex.: 11912345678. Vazio esconde o link.
   email: "contato@kriai.online",
+  cnpj: "", // [SUBSTITUIR] ex.: 00.000.000/0001-00. Vazio esconde o CNPJ.
   cidade: "Juiz de Fora/MG",
   prazoResposta: "15 minutos", // [SUBSTITUIR] confirme o prazo real
 };
