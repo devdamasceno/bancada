@@ -26,10 +26,15 @@ export const campanhas: Campanha[] = [
     cliente: "João Bala, consultor de consórcios (@joao_bala)",
     objetivo: "Explicar grupo, parcela e lance sem letra miúda e levar o interessado para o WhatsApp.",
     pecas: "Landing page com grupo de cotas ilustrado, vitrine de cursos e feed do Instagram.",
-    // [SUBSTITUIR] Troque pelo domínio próprio: o endereço .vercel.app está com o login da Vercel ativado.
-    link: "https://joao-bala-site.vercel.app/",
+    link: "https://joaobala.kriai.online",
     rotuloLink: "Ver a página do João",
     miniatura: "joao-bala",
+    imagem: {
+      src: "/campanhas/joao-bala.jpg",
+      alt: "Página do consultor João Bala: título Seu plano de compra, bem pensado do começo ao fim, ao lado da foto dele e de um grupo de cotas",
+      largura: 1440,
+      altura: 900,
+    },
     cores: ["#2F5BFF", "#D4F25A", "#0E1530", "#F6F7FB"],
   },
   {
