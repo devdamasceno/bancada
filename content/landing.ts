@@ -123,35 +123,38 @@ export const modelos = [
   },
   {
     id: "fisioterapia",
-    rotulo: "Clínica",
+    rotulo: "Fisioterapia",
     legenda:
-      "Passa confiança antes da primeira consulta e mostra os convênios.",
-    titulo: "Volte a se mexer sem dor",
+      "O paciente mostra onde dói, escolhe consultório, domicílio ou online e agenda pelo WhatsApp.",
+    titulo: "Lívia Prado Fisioterapia",
+    link: "https://fisio.kriai.online",
+    rotuloLink: "Ver o modelo no ar",
     precos: [],
     texto:
       "Avaliação de 50 minutos, plano de tratamento por escrito e convênios aceitos.",
     botao: "Agendar avaliação",
     foto: {
-      src: "/modelos/fisioterapia.jpg",
-      alt: "Fisioterapeuta alongando a perna de um paciente",
-      credito:
-        "https://www.pexels.com/photo/physiotherapist-exercising-patient-leg-20860588/",
+      src: "/modelos/fisioterapia-modelo.jpg",
+      alt: "Modelo de site Lívia Prado Fisioterapia: título Fisioterapia sem fila, no consultório ou na sua casa, ao lado da ilustração da fisioterapeuta",
+      credito: "https://fisio.kriai.online",
     },
   },
   {
     id: "pizzaria",
     rotulo: "Delivery",
     legenda:
-      "Cardápio, horário e pedido em um toque, sem pagar comissão de aplicativo.",
-    titulo: "Massa de 48 horas, forno a lenha",
+      "Pizza meio a meio montada na tela, sacola, taxa por bairro e pedido direto no WhatsApp, sem comissão de aplicativo.",
+    titulo: "Forno da Vila Pizzaria",
+    link: "https://pizzaria.kriai.online",
+    rotuloLink: "Ver o modelo no ar",
     precos: [],
     texto:
       "Peça pelo WhatsApp e acompanhe a entrega. Terça a domingo, das 18h às 23h.",
     botao: "Pedir agora",
     foto: {
-      src: "/modelos/pizzaria.jpg",
-      alt: "Pizza napolitana saindo do forno a lenha",
-      credito: "https://www.pexels.com/photo/pizza-in-an-oven-10406184/",
+      src: "/modelos/pizzaria-modelo.jpg",
+      alt: "Modelo de site Forno da Vila Pizzaria: título Massa de 48 horas, forno a lenha, ao lado de uma pizza meio a meio ilustrada",
+      credito: "https://pizzaria.kriai.online",
     },
   },
 ] as const;

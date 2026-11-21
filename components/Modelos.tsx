@@ -33,7 +33,7 @@ export function Modelos() {
           </figure>
         ))}
       </div>
-      <p className="nota">Modelos demonstrativos, sem cliente real. Fotos dos demais modelos: Pexels (licença livre).</p>
+      <p className="nota">Modelos demonstrativos, sem cliente real. Abra cada um para testar o agendamento ou o pedido.</p>
     </section>
   );
 }
