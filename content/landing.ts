@@ -86,8 +86,10 @@ export const modelos = [
     id: "barbearia",
     rotulo: "Barbearia",
     legenda:
-      "Tabela de preços, horários e agenda direto no WhatsApp. É o que o cliente procura antes de sair de casa.",
-    titulo: "Corte na hora marcada",
+      "Preços no quadro, escolha do barbeiro e horário dentro do expediente. O pedido chega pronto no WhatsApp.",
+    titulo: "Barbearia Esquina",
+    link: "https://barbearia.kriai.online",
+    rotuloLink: "Ver o modelo no ar",
     precos: [
       ["Corte", "R$ 45"],
       ["Barba", "R$ 35"],
@@ -96,10 +98,9 @@ export const modelos = [
     texto: "",
     botao: "Agendar pelo WhatsApp",
     foto: {
-      src: "/modelos/barbearia.jpg",
-      alt: "Barbeiro acertando o corte de um cliente com a navalha",
-      credito:
-        "https://www.pexels.com/photo/barber-cutting-person-s-hair-2076930/",
+      src: "/modelos/barbearia-esquina.jpg",
+      alt: "Modelo de site Barbearia Esquina: título Corte em dia, sem fila no sábado, ao lado de um poste de barbeiro listrado e da placa verde com o horário",
+      credito: "https://barbearia.kriai.online",
     },
   },
   {

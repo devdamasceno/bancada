@@ -24,11 +24,16 @@ export function Modelos() {
               <span className="modelo-rotulo">{m.rotulo}</span>
               <b>{m.titulo}</b>
               <span>{m.legenda}</span>
+              {"link" in m && m.link ? (
+                <a className="link modelo-link" href={m.link} target="_blank" rel="noopener">
+                  {m.rotuloLink}
+                </a>
+              ) : null}
             </figcaption>
           </figure>
         ))}
       </div>
-      <p className="nota">Modelos demonstrativos com fotos do Pexels (licença livre).</p>
+      <p className="nota">Modelos demonstrativos, sem cliente real. Fotos dos demais modelos: Pexels (licença livre).</p>
     </section>
   );
 }

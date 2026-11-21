@@ -675,6 +675,13 @@
 .modelo figcaption > span:last-child {
   color: var(--cinza);
 }
+.modelo figcaption > span:nth-of-type(2) {
+  color: var(--cinza);
+}
+.modelo-link {
+  justify-self: start;
+  margin-top: 6px;
+}
 .modelo-rotulo {
   justify-self: start;
   background: var(--amarelo);
