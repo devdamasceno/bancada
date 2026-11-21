@@ -193,7 +193,7 @@ export function Atendimento() {
 
   return (
     <div className={conversando ? "app conversando" : "app"}>
-      <Topo />
+      <Topo semCta />
 
       <main className="palco" id="conteudo">
         <section className="conversa" aria-label="Atendimento">

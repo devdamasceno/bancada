@@ -1,26 +1,27 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Archivo, IBM_Plex_Mono } from "next/font/google";
+import { Big_Shoulders_Display, Figtree } from "next/font/google";
 import { seo } from "@/content/seo";
 import { marca } from "@/content/site";
 import { AtendenteFlutuante } from "@/components/AtendenteFlutuante";
 import { Consentimento } from "@/components/Consentimento";
 import "./globals.css";
 
-const archivo = Archivo({
+// Títulos em letra de cartaz (estreita e pesada); texto em sans-serif legível.
+const titulo = Big_Shoulders_Display({
   subsets: ["latin"],
-  axes: ["wdth"],
-  variable: "--font-archivo",
+  weight: ["700", "900"],
+  variable: "--font-titulo",
   display: "swap",
 });
-const plexMono = IBM_Plex_Mono({
+const texto = Figtree({
   subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-plex-mono",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-texto",
   display: "swap",
 });
 
-export const viewport = { themeColor: "#0c0f0e", colorScheme: "dark" as const };
+export const viewport = { themeColor: "#ffffff", colorScheme: "light" as const };
 
 export const metadata: Metadata = {
   metadataBase: new URL(`https://${marca.dominio}`),
@@ -58,7 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="pt-BR"
-      className={`${archivo.variable} ${plexMono.variable}`}
+      className={`${titulo.variable} ${texto.variable}`}
       suppressHydrationWarning
     >
       <body>

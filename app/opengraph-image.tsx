@@ -18,21 +18,21 @@ export default function Imagem() {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: 72,
-          background: "radial-gradient(ellipse at 30% 30%, #1f2a26, #0c0f0e 70%)",
-          color: "#e8ebe5",
+          background: "#ffffff",
+          color: "#141414",
+          borderBottom: "18px solid #D4006F",
         }}
       >
         <div style={{ display: "flex" }}>
           <div
             style={{
-              background: "#e7c75c",
-              color: "#14120a",
-              padding: "10px 28px",
-              fontSize: 44,
+              color: "#141414",
+              fontSize: 48,
               fontWeight: 900,
-              letterSpacing: 3,
+              letterSpacing: 4,
               textTransform: "uppercase",
-              transform: "rotate(-2deg)",
+              borderLeft: "16px solid #00A3E0",
+              paddingLeft: 20,
             }}
           >
             {marca.nome}
@@ -42,7 +42,7 @@ export default function Imagem() {
           <div style={{ fontSize: 64, fontWeight: 900, lineHeight: 1.05, textTransform: "uppercase", maxWidth: 980 }}>
             {seo.chamadaImagem}
           </div>
-          <div style={{ fontSize: 30, color: "#9aa39e" }}>{seo.apoioImagem}</div>
+          <div style={{ fontSize: 30, color: "#5E5E5E" }}>{seo.apoioImagem}</div>
         </div>
       </div>
     ),

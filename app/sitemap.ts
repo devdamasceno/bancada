@@ -6,6 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = `https://${marca.dominio}`;
   return [
     { url: `${base}/`, changeFrequency: "weekly", priority: 1 },
+    { url: `${base}/portfolio`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/conversa`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/privacidade`, changeFrequency: "yearly", priority: 0.2 },
   ];

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { consentimento, marca, secaoDados } from "@/content/site";
 import { BotaoPreferencias } from "@/components/BotaoPreferencias";
 import { Topo } from "@/components/Marca";
+import { Rodape } from "@/components/Rodape";
 
 export const metadata: Metadata = {
   title: "Privacidade e cookies",
@@ -93,6 +94,7 @@ export default function Privacidade() {
           a qualquer momento.
         </p>
       </main>
+      <Rodape />
     </>
   );
 }

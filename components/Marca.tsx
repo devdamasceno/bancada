@@ -1,38 +1,72 @@
 import Link from "next/link";
+import { landing } from "@/content/landing";
 import { marca } from "@/content/site";
 import { whatsappDoEstudio } from "@/lib/whatsapp";
 
-/** Logo: o nome escrito numa tira de fita crepe, o mesmo material do botão principal. */
-export function Logo({ href = "/" }: { href?: string }) {
+/** Símbolo da marca: o K impresso em ciano, magenta e amarelo, levemente fora de registro. */
+export function SimboloK({ claro = false }: { claro?: boolean }) {
   return (
-    <Link href={href} className="logo-fita" aria-label={`${marca.nome}, página inicial`}>
-      <span aria-hidden="true">{marca.nome}</span>
+    <span className={claro ? "simbolo-k simbolo-k-claro" : "simbolo-k"} aria-hidden="true">
+      <span className="k-c">K</span>
+      <span className="k-m">K</span>
+      <span className="k-y">K</span>
+    </span>
+  );
+}
+
+/** Logo: símbolo K + nome. `claro` para fundos escuros. */
+export function Logo({ href = "/", claro = false }: { href?: string; claro?: boolean }) {
+  return (
+    <Link href={href} className="logo" aria-label={`${marca.nome}, página inicial`}>
+      <SimboloK claro={claro} />
+      <span className="logo-nome" aria-hidden="true">
+        {marca.nome}
+      </span>
     </Link>
   );
 }
 
 /**
- * Cabeçalho padrão de todas as páginas: mesma largura e alinhamento,
- * para a logo nunca mudar de lugar ao navegar. O conteúdo da direita vai em `children`.
+ * Cabeçalho padrão de todas as páginas: mesma largura e alinhamento, para a logo nunca mudar de lugar.
+ * `simples` mostra só a logo (painel); `semCta` esconde o botão principal (na própria conversa).
+ * O conteúdo extra da direita vai em `children`.
  */
-export function Topo({ href, children }: { href?: string; children?: React.ReactNode }) {
+export function Topo({
+  href,
+  simples = false,
+  semCta = false,
+  children,
+}: {
+  href?: string;
+  simples?: boolean;
+  semCta?: boolean;
+  children?: React.ReactNode;
+}) {
   return (
     <header className="topo">
-      <Logo href={href} />
-      <div className="topo-acoes">
-        {children}
-        <SimboloIA />
+      <div className="topo-linha">
+        <Logo href={href} />
+        {!simples && (
+          <nav className="topo-nav" aria-label="Principal">
+            <ul>
+              {landing.nav.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href}>{item.rotulo}</Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+        <div className="topo-acoes">
+          {children}
+          {!simples && !semCta && (
+            <Link className="btn btn-pequeno" href="/conversa">
+              {landing.botaoTopo}
+            </Link>
+          )}
+        </div>
       </div>
     </header>
-  );
-}
-
-/** Símbolo de IA (brilho de quatro pontas) no canto oposto à logo. Leva para a conversa com a Kria. */
-export function SimboloIA() {
-  return (
-    <Link href="/conversa" className="simbolo-ia" aria-label="Conversar com a Kria, assistente de IA">
-      <IconeIA />
-    </Link>
   );
 }
 

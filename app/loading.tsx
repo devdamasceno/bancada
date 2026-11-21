@@ -1,11 +1,11 @@
-import { marca } from "@/content/site";
+import { SimboloK } from "@/components/Marca";
 
-/** Tela de carregamento entre páginas: a logo em fita pulsando no centro. */
+/** Tela de carregamento entre páginas: o K da marca entrando em registro. */
 export default function Carregando() {
   return (
     <div className="carregando" role="status" aria-live="polite">
-      <span className="carregando-logo" aria-hidden="true">
-        {marca.nome}
+      <span className="carregando-k">
+        <SimboloK />
       </span>
       <span className="sr-only">Carregando…</span>
     </div>

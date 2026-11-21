@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function AdminLayout({ children }: LayoutProps<"/admin">) {
   return (
     <div className="adm">
-      <Topo />
+      <Topo simples />
       {children}
     </div>
   );

@@ -1,6 +1,6 @@
 # Kriai: site com atendimento por IA
 
-Site escuro com vídeo de abertura e um atendimento por IA (Claude) que conversa com o cliente, monta o plano,
+Site da agência com a identidade de prova de gráfica (papel branco, tinta preta e cores CMYK), portfólio de campanhas e um atendimento por IA (Claude) que conversa com o cliente, monta o plano,
 mostra o preço "a partir de" e preenche a ficha do pedido ao vivo. Toda mensagem é salva na hora: quem desiste no
 meio também fica registrado.
 
@@ -28,11 +28,20 @@ npm run dev                  # abre em http://localhost:3000
 
 | O quê | Arquivo |
 |---|---|
-| Textos, preços, o que cada preço inclui, frases da abertura, exemplos animados | `content/site.ts` |
+| Preços, o que cada preço inclui, contatos (WhatsApp, e-mail, Instagram) e exemplos animados | `content/site.ts` |
+| Textos da página inicial, menu e rodapé | `content/landing.ts` |
+| Campanhas do portfólio (Em cartaz e /portfolio) | `content/campanhas.ts` |
 | Como a IA atende (tom, regras, ordem das perguntas) | `lib/atendente.ts` |
 | Vídeo de abertura | coloque em `public/intro.mp4` e ajuste `intro.video` em `content/site.ts` |
-| Cores e layout | `app/globals.css` (cores no topo, em `:root`) |
+| Cores, fontes e layout | `app/globals.css` (paleta e escala no topo, em `:root`) |
 | Política de privacidade | `app/privacidade/page.tsx` |
+
+## Identidade visual
+
+- Cores com papel fixo: magenta `#D4006F` só em ações, ciano `#00A3E0` em links e foco, amarelo `#FFE100` em destaques, tinta `#141414` e papel branco.
+- Títulos em Big Shoulders Display (letra de cartaz) e texto em Figtree.
+- Logo: o K impresso em ciano, magenta e amarelo fora de registro (`components/Marca.tsx`).
+- Layout padrão: `.largura`, `.secao`, `.cabeca-secao`, `.dividido` e os títulos `.titulo-hero`, `.titulo-xl` e `.titulo-lg`.
 
 ## Ver os pedidos
 

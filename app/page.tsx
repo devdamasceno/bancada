@@ -1,45 +1,15 @@
-import Image from "next/image";
 import Link from "next/link";
-import { Barlow_Condensed, Fraunces } from "next/font/google";
 import { contexto } from "@/content/atendente";
-import { depoimentos, landing as t, modelos } from "@/content/landing";
+import { landing as t } from "@/content/landing";
 import { seo } from "@/content/seo";
 import { formatarReais, marca, servicos } from "@/content/site";
-import { BotaoPreferencias } from "@/components/BotaoPreferencias";
-import { Fundo } from "@/components/Fundo";
-import { BotaoWhatsapp, Logo, Topo } from "@/components/Marca";
-
-// Fontes só dos modelos de site: cada negócio com a sua letra.
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: "600",
-  variable: "--f-doce",
-  display: "swap",
-});
-const barlow = Barlow_Condensed({
-  subsets: ["latin"],
-  weight: "700",
-  variable: "--f-barba",
-  display: "swap",
-});
+import { Campanhas, Fechamento } from "@/components/Campanhas";
+import { BarraDeCores, MarcasDeCorte } from "@/components/Grafica";
+import { Modelos } from "@/components/Modelos";
+import { Topo } from "@/components/Marca";
+import { Rodape } from "@/components/Rodape";
 
 const real = (v: string) => !!v && !v.includes("[SUBSTITUIR]");
-
-// Fotos do topo da página: a grande (4:3) fica no alto à direita, a quadrada embaixo à esquerda.
-const fotosHero = [
-  {
-    src: "/lp-image01.png",
-    w: 1200,
-    h: 896,
-    alt: "Confeiteira sorrindo enquanto fotografa um bolo com o celular no balcão da padaria",
-  },
-  {
-    src: "/lp-image02.png",
-    w: 1024,
-    h: 1024,
-    alt: "Barbeiro com as mãos tatuadas mexendo no celular ao lado da cadeira da barbearia",
-  },
-];
 
 /**
  * Dados estruturados (schema.org) para o Google entender quem é a empresa, o que vende, por quanto,
@@ -108,63 +78,139 @@ function dadosEstruturados(duvidas: { pergunta: string; resposta: string }[]) {
   }).replace(/</g, "\\u003c");
 }
 
-function BotaoFita({ texto, apoio }: { texto: string; apoio: string }) {
+function Hero() {
   return (
-    <Link className="fita-cta" href="/conversa">
-      <b>{texto}</b>
-      <span>{apoio}</span>
-    </Link>
-  );
-}
+    <section className="largura" aria-labelledby="titulo">
+      <div className="hero">
+        <MarcasDeCorte />
+        <div>
+          <h1 id="titulo" className="titulo-hero">
+            {t.titulo}
+          </h1>
+          <p className="hero-sub">
+            {t.subtitulo} <strong>{t.subtituloDestaque}</strong>
+          </p>
+          <div className="acoes">
+            <Link className="btn" href="/conversa">
+              {t.botao}
+            </Link>
+            <Link className="link" href="/portfolio">
+              {t.botaoSecundario}
+            </Link>
+          </div>
+          <p className="nota">{t.nota}</p>
+        </div>
 
-function Modelo({ m }: { m: (typeof modelos)[number] }) {
-  const foto = (
-    <Image
-      src={m.foto.src}
-      alt={m.foto.alt}
-      width={900}
-      height={600}
-      sizes="(max-width: 760px) 90vw, 40vw"
-    />
-  );
-  return (
-    <figure className={`lp-peca lp-${m.id}`}>
-      <div className="lp-folha">
-        <div className="lp-tela">
-          <span className="lp-url">modelo: {m.rotulo.toLowerCase()}</span>
-          {m.id === "pizzaria" && foto}
-          {m.id === "confeitaria" && <div className="lp-foto-topo">{foto}</div>}
-          <div
-            className={
-              m.id === "barbearia" || m.id === "fisioterapia"
-                ? "lp-corpo lp-dividido"
-                : "lp-corpo"
-            }
-          >
-            {m.id === "fisioterapia" && foto}
-            <div>
-              <h3>{m.titulo}</h3>
-              {m.precos.length > 0 && (
-                <dl className="lp-tabela">
-                  {m.precos.map(([nome, preco]) => (
-                    <div key={nome}>
-                      <dt>{nome}</dt>
-                      <dd>{preco}</dd>
-                    </div>
-                  ))}
-                </dl>
-              )}
-              {m.texto && <p>{m.texto}</p>}
-              <span className="lp-mini-botao">{m.botao}</span>
+        <div
+          className="pecas"
+          role="img"
+          aria-label="Peças de campanha demonstrativas: um story de confeitaria e o Perfil no Google de uma barbearia, sobre a letra K impressa em ciano, magenta e amarelo"
+        >
+          <div className="k-grande" aria-hidden="true">
+            <span className="k-c">K</span>
+            <span className="k-m">K</span>
+            <span className="k-y">K</span>
+          </div>
+          <span className="pecas-rotulo">{t.pecasRotulo}</span>
+          <div className="story">
+            <div className="story-barras">
+              <i />
+              <i />
+              <i />
             </div>
-            {m.id === "barbearia" && foto}
+            <small>Confeitaria do bairro</small>
+            <strong>Bolo de pote saindo agora</strong>
+            <span className="story-botao">Pedir no WhatsApp</span>
+          </div>
+          <div className="gcard">
+            <b>Barbearia do bairro</b>
+            <span>Barbearia, aberta até 20h</span>
+            <div className="gcard-botoes">
+              <i>WhatsApp</i>
+              <i>Rota</i>
+              <i>Site</i>
+            </div>
           </div>
         </div>
       </div>
-      <figcaption>
-        <b>{m.rotulo}.</b> {m.legenda}
-      </figcaption>
-    </figure>
+      <BarraDeCores />
+    </section>
+  );
+}
+
+function Precos() {
+  return (
+    <section className="secao largura" id="precos" aria-labelledby="t-precos">
+      <div className="dividido">
+        <div className="dividido-lado">
+          <h2 id="t-precos" className="titulo-xl">
+            {t.precos.titulo}
+          </h2>
+          <p className="apoio">{t.precos.texto}</p>
+        </div>
+        <div>
+          <table className="tabela-precos">
+            <caption className="sr-only">Preços de entrada dos serviços da {marca.nome}</caption>
+            <tbody>
+              {servicos.map((s) => (
+                <tr key={s.id}>
+                  <th scope="row">
+                    {s.nome}
+                    <small>
+                      {s.inclui} {s.prazo === "mensal" ? "Todo mês." : `Pronto em ${s.prazo}.`}
+                    </small>
+                  </th>
+                  <td>
+                    <em>a partir de</em> {formatarReais(s.aPartirDe)}
+                    {s.unidade && <small>{s.unidade}</small>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="nota">{t.precos.rodape}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ComoFunciona({ duvidas }: { duvidas: { pergunta: string; resposta: string }[] }) {
+  return (
+    <section className="secao largura" aria-labelledby="t-como">
+      <div className="dividido">
+        <div className="dividido-lado">
+          <h2 id="t-como" className="titulo-xl">
+            {t.comoFunciona.titulo}
+          </h2>
+        </div>
+        <ol className="passos">
+          {t.comoFunciona.passos.map((p) => (
+            <li key={p.titulo}>
+              <h3>{p.titulo}</h3>
+              <p>{p.texto}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+      {duvidas.length > 0 && (
+        <div className="dividido duvidas-bloco">
+          <div className="dividido-lado">
+            <h2 id="t-duvidas" className="titulo-lg">
+              {t.duvidas.titulo}
+            </h2>
+          </div>
+          <div className="duvidas">
+            {duvidas.map((d) => (
+              <details key={d.pergunta}>
+                <summary>{d.pergunta}</summary>
+                <p>{d.resposta}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
   );
 }
 
@@ -172,189 +218,17 @@ export default function Home() {
   const duvidas = contexto.perguntasFrequentes.filter((p) => real(p.resposta));
   return (
     <>
-      <Fundo />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: dadosEstruturados(duvidas) }}
-      />
-      <div className={`lp ${fraunces.variable} ${barlow.variable}`}>
-        <Topo />
-
-        <main id="conteudo">
-          <section className="lp-hero" aria-labelledby="titulo">
-            <div className="lp-hero-texto">
-              <h1 id="titulo">
-                {t.titulo}
-                <span className="lp-preco">{t.linhaPreco}</span>
-              </h1>
-              <p className="lp-sub">
-                {t.subtitulo} <strong>{t.subtituloDestaque}</strong>
-              </p>
-              <BotaoFita texto={t.botao} apoio={t.botaoApoio} />
-              <ul className="lp-provas">
-                {t.provas.map((p) => (
-                  <li key={p}>{p}</li>
-                ))}
-              </ul>
-            </div>
-            {/* colagem: duas fotos dos modelos presas com fita, no espaço à direita do texto */}
-            <div className="lp-hero-colagem">
-              {fotosHero.map((f, i) => (
-                <div
-                  key={f.src}
-                  className={`lp-hero-foto lp-hero-foto-${i + 1}`}
-                >
-                  <Image
-                    src={f.src}
-                    alt={f.alt}
-                    width={f.w}
-                    height={f.h}
-                    sizes="(max-width: 860px) 80vw, 34vw"
-                    loading="eager"
-                    fetchPriority={i === 0 ? "high" : "auto"}
-                  />
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="lp-secao" aria-labelledby="t-modelos">
-            <div className="lp-cabeca">
-              <h2 id="t-modelos">{t.modelos.titulo}</h2>
-              <p>{t.modelos.texto}</p>
-            </div>
-            <div className="lp-parede">
-              {modelos.map((m) => (
-                <Modelo key={m.id} m={m} />
-              ))}
-            </div>
-            <div className="lp-repete">
-              <BotaoFita texto={t.modelos.botao} apoio={t.modelos.botaoApoio} />
-            </div>
-          </section>
-
-          <section className="lp-secao" aria-labelledby="t-depoimentos">
-            <div className="lp-cabeca">
-              <h2 id="t-depoimentos">{t.depoimentos.titulo}</h2>
-              <p>{t.depoimentos.texto}</p>
-            </div>
-            <ul className="lp-depoimentos">
-              {depoimentos.map((d) => (
-                <li key={d.nome}>
-                  <figure>
-                    <blockquote>
-                      <p>“{d.texto}”</p>
-                    </blockquote>
-                    <figcaption>
-                      <span className="lp-dep-inicial" aria-hidden="true">
-                        {d.nome[0]}
-                      </span>
-                      <span>
-                        <b>{d.nome}</b>
-                        <span>
-                          {d.negocio}, {d.cidade}
-                        </span>
-                      </span>
-                    </figcaption>
-                  </figure>
-                  <span className="lp-dep-servico">
-                    {d.servico}
-                    {d.teste && (
-                      <span className="lp-dep-selo">{t.depoimentos.selo}</span>
-                    )}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="lp-secao" aria-labelledby="t-precos">
-            <div className="lp-cabeca">
-              <h2 id="t-precos">{t.precos.titulo}</h2>
-              <p>{t.precos.texto}</p>
-            </div>
-            <ul className="lp-precos">
-              {servicos.map((s) => (
-                <li key={s.id}>
-                  <h3>{s.nome}</h3>
-                  <p>{s.inclui}</p>
-                  <span className="lp-prazo">
-                    {s.prazo === "mensal" ? "todo mês" : `pronto em ${s.prazo}`}
-                  </span>
-                  <span className="lp-valor">
-                    <small>a partir de</small> {formatarReais(s.aPartirDe)}
-                    {s.unidade && <small> {s.unidade}</small>}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <p className="lp-nota">{t.precos.rodape}</p>
-          </section>
-
-          <section className="lp-secao lp-duas" aria-labelledby="t-como">
-            <div>
-              <h2 id="t-como">{t.comoFunciona.titulo}</h2>
-              <ol className="lp-passos">
-                {t.comoFunciona.passos.map((p) => (
-                  <li key={p.titulo}>
-                    <h3>{p.titulo}</h3>
-                    <p>{p.texto}</p>
-                  </li>
-                ))}
-              </ol>
-            </div>
-            {duvidas.length > 0 && (
-              <div>
-                <h2 id="t-duvidas">{t.duvidas.titulo}</h2>
-                <div className="lp-duvidas">
-                  {duvidas.map((d) => (
-                    <details key={d.pergunta}>
-                      <summary>{d.pergunta}</summary>
-                      <p>{d.resposta}</p>
-                    </details>
-                  ))}
-                </div>
-              </div>
-            )}
-          </section>
-
-          <section className="lp-fechamento" aria-labelledby="t-fechamento">
-            <h2 id="t-fechamento">{t.fechamento.titulo}</h2>
-            <p>{t.fechamento.texto}</p>
-            <BotaoFita texto={t.botao} apoio={t.botaoApoio} />
-          </section>
-        </main>
-
-        <footer className="lp-rodape">
-          <div className="lp-rodape-marca">
-            <Logo />
-            {t.rodape.linhas.map((l) => (
-              <p key={l}>{l}</p>
-            ))}
-            {(real(marca.cnpj) || real(marca.cidade)) && (
-              <p>
-                {[
-                  real(marca.cnpj) && `CNPJ ${marca.cnpj}`,
-                  real(marca.cidade) && marca.cidade,
-                ]
-                  .filter(Boolean)
-                  .join(", ")}
-              </p>
-            )}
-          </div>
-          <nav className="lp-rodape-links" aria-label="Rodapé">
-            <BotaoWhatsapp
-              texto="Falar no WhatsApp"
-              mensagem={t.whatsappMensagem}
-            />
-            {real(marca.email) && (
-              <a href={`mailto:${marca.email}`}>{marca.email}</a>
-            )}
-            <Link href="/privacidade">{t.rodape.privacidade}</Link>
-            <BotaoPreferencias rotulo={t.rodape.cookies} />
-          </nav>
-        </footer>
-      </div>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: dadosEstruturados(duvidas) }} />
+      <Topo />
+      <main id="conteudo">
+        <Hero />
+        <Precos />
+        <Campanhas />
+        <Modelos />
+        <ComoFunciona duvidas={duvidas} />
+        <Fechamento />
+      </main>
+      <Rodape />
     </>
   );
 }

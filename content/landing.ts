@@ -3,40 +3,42 @@
 // Itens com [SUBSTITUIR] precisam de dado real antes de publicar.
 
 export const landing = {
-  titulo: "Seu negócio pronto para vender na internet.",
-  linhaPreco: "site, vídeo, logo e Google, a partir de R$ 147",
-  subtitulo: "A Kria entende seu negócio e mostra o preço em 2 minutos.",
+  titulo: "Propaganda de agência, no tamanho do seu negócio.",
+  subtitulo:
+    "Site, vídeo curto, Perfil no Google e logo para barbearias, confeitarias, clínicas e comércios de todo o Brasil.",
   subtituloDestaque:
-    "Uma pessoa da equipe manda a proposta, e você paga a primeira metade só se aprovar.",
-  botao: "Montar meu plano com a Kria",
-  botaoApoio: "Grátis e sem cadastro. Você vê o preço antes de decidir.",
-  provas: [
-    "50% só depois de aprovar",
-    "Preço aberto, sem surpresa",
-    "1 rodada de ajustes inclusa",
+    "A Kria, nossa assistente de IA, mostra o preço em 2 minutos, e você paga a primeira metade só se aprovar a proposta.",
+  botao: "Montar meu plano grátis",
+  botaoSecundario: "Ver campanhas",
+  nota: "Grátis e sem cadastro. Atendimento 100% online, a partir de Juiz de Fora (MG).",
+  pecasRotulo: "Peças demonstrativas",
+  whatsappMensagem: "Olá, Kriai! Vim pelo site e quero conversar sobre a divulgação do meu negócio.",
+
+  nav: [
+    { rotulo: "Preços", href: "/#precos" },
+    { rotulo: "Campanhas", href: "/portfolio" },
+    { rotulo: "Atendimento", href: "/conversa" },
   ],
-  whatsappMensagem: "Oi! Vim pelo site da Kriai e quero um orçamento.",
-
-  modelos: {
-    titulo: "Veja como fica o site de quem vende o que você vende",
-    texto:
-      "Cada modelo nasce do negócio: as cores da barbearia não servem para a confeitaria. O seu sai com a sua cara, o seu preço e o botão de WhatsApp no lugar certo.",
-    botao: "Quero um desses para o meu negócio",
-    botaoApoio: "A Kria pergunta o essencial e mostra o preço",
-  },
-
-  depoimentos: {
-    titulo: "Quem já tirou o negócio do papel",
-    texto: "O que dizem os donos de pequenos negócios que passaram pela Kria.",
-    selo: "Via google",
-  },
+  botaoTopo: "Montar meu plano",
 
   precos: {
-    titulo: "Quanto custa, sem precisar pedir orçamento",
+    titulo: "Tabela de preços",
     texto:
-      "Preço de entrada de cada serviço. Dá para começar por um e somar os outros depois.",
+      "Preço de entrada de cada serviço. Dá para começar por um e somar os outros depois. Projeto personalizado recebe orçamento sem compromisso.",
     rodape:
       "Pix ou cartão em até 3x. Domínio e hospedagem do site são à parte e vêm explicados na proposta.",
+  },
+
+  campanhas: {
+    titulo: "Em cartaz",
+    texto:
+      "Cada campanha nasce do negócio do cliente: o que ele vende, como o cliente dele decide e onde a conversa fecha. Por isso nenhuma página se parece com a outra.",
+  },
+
+  modelos: {
+    titulo: "Modelos por segmento",
+    texto:
+      "Demonstrações de como fica o site de quem vende o que você vende. O seu sai com a sua cara, o seu preço e o botão de WhatsApp no lugar certo.",
   },
 
   comoFunciona: {
@@ -44,23 +46,19 @@ export const landing = {
     passos: [
       {
         titulo: "Você conversa com a Kria",
-        texto:
-          "Ela entende o seu negócio, monta o plano e mostra o preço. Leva uns 2 minutos.",
+        texto: "Ela entende o seu negócio, monta o plano e mostra o preço. Leva uns 2 minutos.",
       },
       {
         titulo: "A proposta chega em até 1 dia útil",
-        texto:
-          "Uma pessoa da equipe revisa o pedido e manda a proposta pelo WhatsApp ou e-mail.",
+        texto: "Uma pessoa da equipe revisa o pedido e manda a proposta pelo WhatsApp ou e-mail.",
       },
       {
         titulo: "Você aprova e paga 50%",
-        texto:
-          "O trabalho só começa depois que você concorda com o que vai receber e quanto custa.",
+        texto: "O trabalho só começa depois que você concorda com o que vai receber e quanto custa.",
       },
       {
         titulo: "Prévia, ajuste e entrega",
-        texto:
-          "Você vê antes, pede o ajuste e só então paga o restante e recebe a versão final.",
+        texto: "Você vê antes, pede o ajuste e só então paga o restante e recebe a versão final.",
       },
     ],
   },
@@ -68,17 +66,17 @@ export const landing = {
   duvidas: { titulo: "Perguntas que todo mundo faz" },
 
   fechamento: {
-    titulo: "Em 2 minutos você sabe quanto custa o seu",
-    texto:
-      "Escreva do seu jeito, como no WhatsApp. Se não fizer sentido para você, não custa nada.",
+    titulo: "Sua campanha é a próxima",
+    texto: "Escreva do seu jeito, como no WhatsApp. Em 2 minutos a Kria mostra o plano e o preço de entrada.",
   },
 
   rodape: {
-    linhas: [
-      "Site, vídeo, logo e Google para pequenos negócios do Brasil todo, 100% online.",
-    ],
+    servicos: "Serviços",
+    agencia: "Agência",
+    contato: "Contato",
     privacidade: "Privacidade",
     cookies: "Preferências de cookies",
+    assinatura: "Feito com IA e revisado por gente.",
   },
 };
 

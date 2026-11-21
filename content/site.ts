@@ -6,10 +6,13 @@ export const marca = {
   dominio: "www.kriai.online",
   descricao:
     "Fale do seu negócio e receba na hora um plano com site, vídeo, imagem, edição ou Google, e quanto custa.",
-  whatsapp: "(32) 988039801", // [SUBSTITUIR] só números com DDD, ex.: 11912345678. Vazio esconde o link.
+  whatsapp: "(32) 98495-6726", // só números com DDD. Vazio esconde o link.
   email: "contato@kriai.online",
   cnpj: "", // [SUBSTITUIR] ex.: 00.000.000/0001-00. Vazio esconde o CNPJ.
   cidade: "Juiz de Fora/MG",
+  instagram: "kriai.online",
+  slogan: "Propaganda de agência, no tamanho do seu negócio.",
+  ano: 2026, // ano do rodapé (fixo para a página continuar estática)
   prazoResposta: "15 minutos", // [SUBSTITUIR] confirme o prazo real
 };
 

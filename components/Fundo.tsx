@@ -38,7 +38,7 @@ export function Fundo() {
           if (k < 28) a += 0.5 * (1 - k / 28) * Math.max(0, 1 - raio / 1000);
         }
         a = Math.min(a, 0.8);
-        ctx.fillStyle = a > 0.18 ? `rgba(231,199,92,${a})` : `rgba(232,235,229,${a})`;
+        ctx.fillStyle = a > 0.18 ? `rgba(0,163,224,${a})` : `rgba(20,20,20,${a * 0.6})`;
         ctx.fillRect(x - 1, y - 1, 2, 2);
       }
       pulsos = pulsos.filter((p) => (t - p.t) * 0.6 < 1000);
