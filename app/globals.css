@@ -504,6 +504,13 @@
   overflow: hidden;
   background: #fff;
 }
+.prova-tela img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
 .prova-nota {
   font-size: 0.8rem;
   color: #a9a9a9;

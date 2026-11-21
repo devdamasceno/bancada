@@ -11,6 +11,8 @@ export type Campanha = {
   link: string | null;
   rotuloLink: string;
   miniatura: "joao-bala" | "personal";
+  /** Captura real da página. Quando existe, substitui a miniatura desenhada. */
+  imagem?: { src: string; alt: string; largura: number; altura: number };
   /** Cores da marca do cliente, mostradas na barra de cores da prova. */
   cores: string[];
   /** true mostra o aviso de miniatura ilustrativa. */
@@ -31,15 +33,20 @@ export const campanhas: Campanha[] = [
     cores: ["#2F5BFF", "#D4F25A", "#0E1530", "#F6F7FB"],
   },
   {
-    id: "personal",
-    titulo: "Personal trainer",
-    cliente: "[SUBSTITUIR: nome e @ do personal]",
+    id: "rafa-duarte",
+    titulo: "Rafa Duarte",
+    cliente: "Rafa Duarte, personal trainer em Juiz de Fora e online",
     objetivo: "Transformar seguidor do Instagram em aluno com avaliação marcada.",
-    pecas: "Landing page de captação com método, planos e agendamento pelo WhatsApp.",
-    link: null, // [SUBSTITUIR] endereço da landing do personal
-    rotuloLink: "Ver a página",
+    pecas: "Landing page com método, modalidades, planos e agendamento que chega pronto no WhatsApp.",
+    link: "https://personal.kriai.online",
+    rotuloLink: "Ver a página do Rafa",
     miniatura: "personal",
-    cores: ["#FF5A1F", "#141414", "#2A2A2A", "#F4F1EC"],
-    ilustrativa: true,
+    imagem: {
+      src: "/campanhas/rafa-duarte.jpg",
+      alt: "Página do personal Rafa Duarte: título Treino sério, resultado de verdade, ao lado da foto dele de braços cruzados",
+      largura: 1440,
+      altura: 900,
+    },
+    cores: ["#FF4D1A", "#0B0B0B", "#262626", "#F2F2F2"],
   },
 ];

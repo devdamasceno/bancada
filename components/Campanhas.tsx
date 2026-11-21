@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { campanhas, type Campanha } from "@/content/campanhas";
 import { landing as t } from "@/content/landing";
@@ -55,9 +56,21 @@ function Caso({ c, invertido }: { c: Campanha; invertido: boolean }) {
     <article className={invertido ? "caso caso-invertido" : "caso"}>
       <div className="prova">
         <MarcasDeCorte />
-        <div className="prova-tela" role="img" aria-label={DESCRICAO[c.miniatura]}>
-          {c.miniatura === "joao-bala" ? <MiniaturaJoaoBala /> : <MiniaturaPersonal />}
-        </div>
+        {c.imagem ? (
+          <div className="prova-tela">
+            <Image
+              src={c.imagem.src}
+              alt={c.imagem.alt}
+              width={c.imagem.largura}
+              height={c.imagem.altura}
+              sizes="(max-width: 900px) 92vw, 640px"
+            />
+          </div>
+        ) : (
+          <div className="prova-tela" role="img" aria-label={DESCRICAO[c.miniatura]}>
+            {c.miniatura === "joao-bala" ? <MiniaturaJoaoBala /> : <MiniaturaPersonal />}
+          </div>
+        )}
         <BarraDeCores cores={c.cores} fina />
         {c.ilustrativa && (
           <p className="prova-nota">Miniatura ilustrativa: entra a captura real quando o link estiver no ar.</p>
