@@ -31,11 +31,11 @@ export const campanhas: Campanha[] = [
     miniatura: "joao-bala",
     imagem: {
       src: "/campanhas/joao-bala.jpg",
-      alt: "Página do consultor João Bala: título Seu plano de compra, bem pensado do começo ao fim, ao lado da foto dele e de um grupo de cotas",
+      alt: "Página do consultor João Bala em vermelho e grafite: título Seu plano de compra, bem pensado do começo ao fim, ao lado da foto dele e de um grupo de cotas",
       largura: 1440,
       altura: 900,
     },
-    cores: ["#2F5BFF", "#D4F25A", "#0E1530", "#F6F7FB"],
+    cores: ["#B80D1E", "#2A2E35", "#D9DDE3", "#F5F6F8"],
   },
   {
     id: "rafa-duarte",
