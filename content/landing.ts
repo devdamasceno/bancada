@@ -106,16 +106,19 @@ export const modelos = [
   {
     id: "confeitaria",
     rotulo: "Confeitaria",
-    legenda: "Cardápio com fotos e encomenda pelo WhatsApp, com prazo claro.",
-    titulo: "Bolos de festa sob encomenda",
+    legenda:
+      "O cliente monta o bolo, vê a prévia e o preço na hora, e a encomenda chega pronta no WhatsApp.",
+    titulo: "Glacê Ateliê de Bolos",
+    link: "https://bolos.kriai.online",
+    rotuloLink: "Ver o modelo no ar",
     precos: [],
     texto:
       "Encomendas com 3 dias de antecedência. Retirada ou entrega no bairro.",
     botao: "Fazer encomenda",
     foto: {
-      src: "/modelos/confeitaria.jpg",
-      alt: "Bolo de aniversário coberto de morangos, mirtilos e velas",
-      credito: "https://www.pexels.com/photo/birthday-cake-1684039/",
+      src: "/modelos/glace-bolos.jpg",
+      alt: "Modelo de site Glacê Ateliê de Bolos: título Bolo de festa do jeito que você imaginou, ao lado de um bolo de dois andares ilustrado em corte",
+      credito: "https://bolos.kriai.online",
     },
   },
   {
