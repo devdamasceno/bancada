@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Big_Shoulders_Display, Figtree } from "next/font/google";
+import { Big_Shoulders, Figtree } from "next/font/google";
 import { seo } from "@/content/seo";
 import { marca } from "@/content/site";
 import { AtendenteFlutuante } from "@/components/AtendenteFlutuante";
@@ -8,9 +8,9 @@ import { Consentimento } from "@/components/Consentimento";
 import "./globals.css";
 
 // Títulos em letra de cartaz (estreita e pesada); texto em sans-serif legível.
-const titulo = Big_Shoulders_Display({
+// Big Shoulders é fonte variável (peso e tamanho óptico): o navegador ajusta o desenho ao tamanho do título.
+const titulo = Big_Shoulders({
   subsets: ["latin"],
-  weight: ["700", "900"],
   variable: "--font-titulo",
   display: "swap",
 });
