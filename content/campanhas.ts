@@ -22,20 +22,20 @@ export type Campanha = {
 export const campanhas: Campanha[] = [
   {
     id: "joao-bala",
-    titulo: "João Bala",
+    titulo: "De Grão em João",
     cliente: "João Bala, consultor de consórcios (@joao_bala)",
-    objetivo: "Explicar grupo, parcela e lance sem letra miúda e levar o interessado para o WhatsApp.",
-    pecas: "Landing page com grupo de cotas ilustrado, vitrine de cursos e feed do Instagram.",
+    objetivo: "Explicar grupo, parcela e lance sem letra miúda, mostrar quem é o João e levar o interessado para o WhatsApp.",
+    pecas: "Marca De Grão em João, landing page com simulador de objetivo e blog que o próprio João publica pelo painel.",
     link: "https://joaobala.kriai.online",
-    rotuloLink: "Ver a página do João",
+    rotuloLink: "Ver o site do João",
     miniatura: "joao-bala",
     imagem: {
       src: "/campanhas/joao-bala.jpg",
-      alt: "Página do consultor João Bala em vermelho e grafite: título Seu plano de compra, bem pensado do começo ao fim, ao lado da foto dele e de um grupo de cotas",
+      alt: "Site De Grão em João em vermelho e grafite: título Sua próxima conquista, planejada parcela por parcela. Com João Bala, ao lado da foto dele atendendo um cliente",
       largura: 1440,
       altura: 900,
     },
-    cores: ["#B80D1E", "#2A2E35", "#D9DDE3", "#F5F6F8"],
+    cores: ["#C8102E", "#7A1F2E", "#2A2E35", "#F5F6F8"],
   },
   {
     id: "rafa-duarte",
