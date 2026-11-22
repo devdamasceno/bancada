@@ -11,7 +11,15 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
  */
 export async function POST(request: Request) {
   const c = (await request.json().catch(() => null)) as { conversaId?: unknown } | null;
-  const id = typeof c?.conversaId === "string" ? c.conversaId : "";
+  return avisar(request, typeof c?.conversaId === "string" ? c.conversaId : "");
+}
+
+/** Mesmo efeito por GET (?conversaId=...), para quando a sessão só consegue abrir links. */
+export async function GET(request: Request) {
+  return avisar(request, new URL(request.url).searchParams.get("conversaId") ?? "");
+}
+
+async function avisar(request: Request, id: string) {
   if (!UUID.test(id)) return Response.json({ erro: "id" }, { status: 400 });
 
   const p = await obterEstadoPedido(id);
