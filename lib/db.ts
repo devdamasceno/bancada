@@ -453,6 +453,19 @@ export async function marcarPagamento(id: string, status: "recusado" | "estornad
 }
 
 /** Reserva o disparo da geração. True só para quem reservou primeiro. */
+/** Reserva o e-mail de "site no ar". True só na primeira vez. */
+export async function reservarAvisoSite(id: string) {
+  const { data, error } = await exigirSupabase()
+    .from("conversas")
+    .update({ site_avisado_em: new Date().toISOString() })
+    .eq("id", id)
+    .eq("site_status", "publicado")
+    .is("site_avisado_em", null)
+    .select("id");
+  falhou("reservar o aviso do site", error);
+  return (data ?? []).length > 0;
+}
+
 export async function reservarGeracao(id: string) {
   const { data, error } = await exigirSupabase()
     .from("conversas")
@@ -472,20 +485,3 @@ export async function liberarGeracao(id: string, obs: string) {
   falhou("liberar a geração", error);
 }
 
-/** Atualização vinda da sessão que gera o site. */
-export async function atualizarSite(
-  id: string,
-  s: { status: "gerando" | "publicado" | "erro"; url?: string; obs?: string; dominioStatus?: string },
-) {
-  const { error } = await exigirSupabase()
-    .from("conversas")
-    .update({
-      site_status: s.status,
-      ...(s.url ? { site_url: s.url } : {}),
-      ...(s.obs ? { site_obs: s.obs.slice(0, 1000) } : {}),
-      ...(s.dominioStatus ? { dominio_status: s.dominioStatus } : {}),
-      ...(s.status === "publicado" ? { site_publicado_em: new Date().toISOString() } : {}),
-    })
-    .eq("id", id);
-  falhou("atualizar o site", error);
-}

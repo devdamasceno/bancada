@@ -23,3 +23,5 @@ alter table conversas add column if not exists site_obs text;                   
 
 create index if not exists conversas_pagamento_idx on conversas (pagamento_status) where pagamento_status is not null;
 create index if not exists conversas_site_idx on conversas (site_status) where site_status is not null;
+
+alter table conversas add column if not exists site_avisado_em timestamptz;      -- quando o e-mail de site no ar saiu
