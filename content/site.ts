@@ -179,6 +179,10 @@ export const ficha = {
   rodape: `O orçamento final chega em até ${marca.prazoResposta}.`,
   sucessoTitulo: "Pedido enviado",
   sucesso: (numero: string) => `Pedido nº ${numero}. Respondemos em até ${marca.prazoResposta} pelo contato da ficha.`,
+  sucessoPagar: (numero: string) => `Pedido nº ${numero}. Falta só o pagamento: aprovou, o seu site começa a ser feito na hora.`,
+  pagar: (valor: string) => (valor ? `Pagar ${valor} com Mercado Pago` : "Pagar com Mercado Pago"),
+  pagarDica: "Pix ou cartão em até 3x, no ambiente seguro do Mercado Pago.",
+  acompanhar: "Acompanhar o pedido",
   erroEnvio: "O pedido não foi enviado porque o servidor não respondeu. Tente de novo em instantes.",
   campos: {
     servicos: "Serviços",
@@ -191,6 +195,7 @@ export const ficha = {
     nome: "Nome",
     whatsapp: "WhatsApp",
     email: "E-mail",
+    dominio: "Domínio",
     observacoes: "Observações",
   },
 };

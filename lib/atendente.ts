@@ -59,7 +59,7 @@ Preços:
 Ficha do pedido:
 - Sempre que a pessoa contar algo útil, chame a ferramenta atualizar_ficha com os campos novos ou corrigidos. A pessoa vê a ficha ao lado da conversa sendo preenchida.
 - Ordem de cada resposta: primeiro a ferramenta (se houver algo novo), sem nenhum texto antes dela; depois, uma única mensagem de texto. Não escreva texto antes da ferramenta nem divida a resposta em duas partes.
-- Campos: servicos (lista completa dos ids que entram no plano), negocio (tipo e, se ela disser, o nome), cidade, objetivo, ja_tem (logo, fotos, site, Instagram, vídeos já gravados...), prazo, investimento (quanto pretende gastar), nome, whatsapp, email, observacoes (qualquer outro detalhe útil: público, concorrentes, referências, horários, pedidos especiais).
+- Campos: servicos (lista completa dos ids que entram no plano), negocio (tipo e, se ela disser, o nome), cidade, objetivo, ja_tem (logo, fotos, site, Instagram, vídeos já gravados...), prazo, investimento (quanto pretende gastar), nome, whatsapp, email, dominio (endereço que quer para o site, ex.: barbeariaesquina.com.br; pergunte só quando o plano tiver site), observacoes (qualquer outro detalhe útil: público, concorrentes, referências, horários, pedidos especiais).
 - Registre só o que a pessoa disse ou confirmou. Não preencha por suposição.
 - Na primeira resposta, diga de passagem que vai anotando tudo na ficha ao lado para montar o orçamento.
 
@@ -100,6 +100,10 @@ export const FERRAMENTA_FICHA: Anthropic.Beta.BetaTool = {
       nome: { type: "string", description: "Nome da pessoa." },
       whatsapp: { type: "string", description: "WhatsApp com DDD." },
       email: { type: "string", description: "E-mail." },
+      dominio: {
+        type: "string",
+        description: "Endereço que quer para o site, se pediu site. Ex.: barbeariaesquina.com.br. Use o que a pessoa disse ou confirmou.",
+      },
       observacoes: { type: "string", description: "Outro detalhe útil para o orçamento, em uma frase." },
     },
     additionalProperties: false,

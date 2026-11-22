@@ -4,6 +4,7 @@ import { formatarReais, marca, servicos } from "@/content/site";
 import { avaliarLead } from "@/lib/avaliacao";
 import {
   liberarEmail,
+  obterEstadoPedido,
   obterLead,
   reservarEmail,
   salvarAvaliacao,
@@ -27,12 +28,12 @@ import {
 //                    o aviso para você funciona, mas o e-mail ao cliente fica desligado.
 const REMETENTE_TESTE = `${marca.nome} <onboarding@resend.dev>`;
 const remetente = () => process.env.EMAIL_REMETENTE || REMETENTE_TESTE;
-const destinatariosAviso = () => (process.env.NOTIFICAR_EMAIL ?? "").split(",").map((e) => e.trim()).filter(Boolean);
+export const destinatariosAviso = () => (process.env.NOTIFICAR_EMAIL ?? "").split(",").map((e) => e.trim()).filter(Boolean);
 export const emailClienteLigado = () => !!process.env.RESEND_API_KEY && !!process.env.EMAIL_REMETENTE;
 
-const esc = (t: string) => t.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+export const esc = (t: string) => t.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 const soDigitos = (t: string) => t.replace(/\D/g, "");
-const emailValido = (e?: string) => !!e && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e.trim());
+export const emailValido = (e?: string) => !!e && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e.trim());
 const real = (t: string) => !!t && !t.includes("[SUBSTITUIR]"); // ignora dados ainda não preenchidos
 
 /** Link de WhatsApp com a mensagem já escrita. Números sem DDI recebem o 55 do Brasil. */
@@ -46,11 +47,11 @@ const ROTULO_TEMPERATURA: Record<Avaliacao["temperatura"], string> = { quente: "
 
 /* ---------- layout dos e-mails ----------
    Tabelas e estilos inline: é o que funciona no Gmail, Outlook e Apple Mail. Cores da marca: fita (#e7c75c) e breu. */
-const COR = { fita: "#e7c75c", tintaFita: "#14120a", breu: "#0c0f0e", texto: "#1d211f", apoio: "#5f6763", linha: "#e7e4dc", fundo: "#f2f0ea", zap: "#1faa59" };
+export const COR = { fita: "#e7c75c", tintaFita: "#14120a", breu: "#0c0f0e", texto: "#1d211f", apoio: "#5f6763", linha: "#e7e4dc", fundo: "#f2f0ea", zap: "#1faa59" };
 const FONTE = "font-family:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif";
 
 /** Moldura comum: fundo, faixa da marca, cartão branco e rodapé. `resumo` é o texto de pré-visualização da caixa de entrada. */
-function moldura(conteudo: string, { resumo, rodape }: { resumo: string; rodape?: string }) {
+export function moldura(conteudo: string, { resumo, rodape }: { resumo: string; rodape?: string }) {
   return `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>${esc(marca.nome)}</title></head>
 <body style="margin:0;padding:0;background:${COR.fundo}">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(resumo)}</div>
@@ -65,10 +66,10 @@ ${rodape ? `<tr><td style="padding:18px 28px 0;color:${COR.apoio};font-size:12px
 }
 
 /** Botão que funciona em todo cliente de e-mail (tabela + link com padding). */
-const botao = (href: string, texto: string, cor: string, corTexto = "#fff") =>
+export const botao = (href: string, texto: string, cor: string, corTexto = "#fff") =>
   `<table role="presentation" cellpadding="0" cellspacing="0" style="display:inline-table;margin:0 8px 8px 0"><tr><td style="background:${cor};border-radius:6px"><a href="${href}" style="display:inline-block;padding:12px 20px;color:${corTexto};font-weight:700;font-size:15px;text-decoration:none">${esc(texto)}</a></td></tr></table>`;
 
-const titulo2 = (t: string) =>
+export const titulo2 = (t: string) =>
   `<h2 style="margin:28px 0 12px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:${COR.apoio}">${esc(t)}</h2>`;
 const plano = (lead: LeadCompleto) =>
   servicos.filter((s) => lead.ficha.servicos.includes(s.id)).map((s) => s.nome).join(" + ") || "a definir";
@@ -185,6 +186,7 @@ function emailAviso(lead: LeadCompleto, av: Avaliacao | null, link: string) {
     ["Investimento", f.investimento],
     ["WhatsApp", f.whatsapp],
     ["E-mail", f.email],
+    ["Domínio", f.dominio],
     ["Observações", f.observacoes],
   ];
   const lista = (itens: string[]) =>
@@ -229,7 +231,7 @@ ${conversaHtml(lead, quem)}`;
 
 /* ---------- 2. confirmação para o cliente ---------- */
 
-function emailCliente(lead: LeadCompleto) {
+function emailCliente(lead: LeadCompleto, linkPedido: string | null = null) {
   const f = lead.ficha;
   const nome = f.nome?.split(" ")[0] || "Olá";
   const assunto = `Recebemos seu pedido nº ${lead.numero} · ${marca.nome}`;
@@ -255,8 +257,12 @@ function emailCliente(lead: LeadCompleto) {
     )
     .join("");
 
+  const abertura = linkPedido
+    ? `<p style="margin:0 0 16px">Obrigado por falar com a ${esc(marca.nome)}. Falta só o pagamento: assim que ele for aprovado, o seu site começa a ser feito e você acompanha tudo pela página do pedido.</p>
+${botao(linkPedido, "Pagar e acompanhar meu pedido", COR.breu)}`
+    : `<p style="margin:0 0 16px">Obrigado por falar com a ${esc(marca.nome)}. Uma pessoa da nossa equipe vai revisar tudo e mandar a proposta com o valor final em até <strong>${esc(marca.prazoResposta)}</strong>, pelo WhatsApp ou por este e-mail.</p>`;
   const conteudo = `<h1 style="margin:0 0 12px;font-size:24px;line-height:1.25">${esc(nome)}, recebemos seu pedido!</h1>
-<p style="margin:0 0 16px">Obrigado por falar com a ${esc(marca.nome)}. Uma pessoa da nossa equipe vai revisar tudo e mandar a proposta com o valor final em até <strong>${esc(marca.prazoResposta)}</strong>, pelo WhatsApp ou por este e-mail.</p>
+${abertura}
 <div style="margin:0 0 8px;padding:14px 18px;background:${COR.fundo};border-left:4px solid ${COR.fita};border-radius:0 8px 8px 0">
 <p style="margin:0;font-size:13px;color:${COR.apoio}">Pedido nº ${esc(lead.numero ?? "")}</p>
 <p style="margin:2px 0 0;font-size:17px;font-weight:800">${esc(plano(lead))} <span style="font-weight:400;color:${COR.apoio}">· a partir de ${esc(formatarReais(lead.valorMinimo))}</span></p>
@@ -270,13 +276,17 @@ ${titulo2("Como funciona daqui para frente")}
 ${titulo2("Sua conversa com a gente")}
 ${conversaHtml(lead, f.nome || "Você")}`;
   const html = moldura(conteudo, {
-    resumo: `Pedido nº ${lead.numero} recebido. A proposta chega em até ${marca.prazoResposta}.`,
+    resumo: linkPedido
+      ? `Pedido nº ${lead.numero} recebido. Falta só o pagamento.`
+      : `Pedido nº ${lead.numero} recebido. A proposta chega em até ${marca.prazoResposta}.`,
     rodape: `Você recebeu este e-mail porque enviou um pedido em ${esc(marca.dominio)}. Seus dados são usados só para preparar o orçamento, como explica nossa <a href="https://${esc(marca.dominio)}/privacidade" style="color:${COR.apoio}">política de privacidade</a>.`,
   });
 
   const texto = [
     `${nome}, recebemos seu pedido. Obrigado por falar com a ${marca.nome}!`,
-    `Uma pessoa da nossa equipe vai revisar tudo e mandar a proposta com o valor final em até ${marca.prazoResposta}, pelo WhatsApp ou por este e-mail.`,
+    linkPedido
+      ? `Falta só o pagamento. Pague e acompanhe seu pedido em: ${linkPedido}`
+      : `Uma pessoa da nossa equipe vai revisar tudo e mandar a proposta com o valor final em até ${marca.prazoResposta}, pelo WhatsApp ou por este e-mail.`,
     tabelaTexto(linhas),
     `Como funciona daqui para frente:\n${contexto.comoFunciona.map((p, i) => `${i + 1}. ${p}`).join("\n")}`,
     `Quer mudar ou acrescentar algo? É só responder este e-mail.${contatos.length ? ` Ou fale com a gente: ${contatos.join(" · ")}.` : ""}`,
@@ -288,9 +298,9 @@ ${conversaHtml(lead, f.nome || "Você")}`;
 
 /* ---------- envio ---------- */
 
-type Email = { para: string[]; assunto: string; html: string; texto: string; responderPara?: string };
+export type Email = { para: string[]; assunto: string; html: string; texto: string; responderPara?: string };
 
-async function enviar(e: Email) {
+export async function enviar(e: Email) {
   const chave = process.env.RESEND_API_KEY;
   if (!chave) {
     console.warn("[email] RESEND_API_KEY não configurada: e-mail não enviado.");
@@ -351,7 +361,7 @@ export async function notificarLead(lead: LeadCompleto, av: Avaliacao | null, ba
 export type ResultadoCliente = "enviado" | "sem_email" | "nao_enviado_ainda" | "desligado" | "ja_enviado" | "falhou";
 
 /** Manda ao cliente o registro do pedido e a cópia da conversa. Só para pedido enviado, uma vez. */
-export async function enviarConfirmacaoCliente(lead: LeadCompleto): Promise<ResultadoCliente> {
+export async function enviarConfirmacaoCliente(lead: LeadCompleto, linkPedido: string | null = null): Promise<ResultadoCliente> {
   if (lead.situacao !== "enviado") return "nao_enviado_ainda";
   if (!emailValido(lead.ficha.email)) return "sem_email";
   if (!emailClienteLigado()) {
@@ -362,7 +372,7 @@ export async function enviarConfirmacaoCliente(lead: LeadCompleto): Promise<Resu
   }
   if (!(await reservarEmail(lead.id, "email_cliente_em"))) return "ja_enviado";
   try {
-    await enviar({ para: [lead.ficha.email!.trim()], ...emailCliente(lead), responderPara: destinatariosAviso()[0] });
+    await enviar({ para: [lead.ficha.email!.trim()], ...emailCliente(lead, linkPedido), responderPara: destinatariosAviso()[0] });
     return "enviado";
   } catch (err) {
     console.error("[email cliente]", lead.id, err);
@@ -378,7 +388,9 @@ export async function processarPedidoEnviado(id: string, baseUrl: string) {
     const lead = await obterLead(id);
     if (!lead) return;
     // a confirmação ao cliente não espera a avaliação da IA
-    const cliente = enviarConfirmacaoCliente(lead);
+    const estado = await obterEstadoPedido(id);
+    const linkPedido = estado?.mpLink && estado.pagamentoStatus !== "aprovado" ? `${baseUrl}/pedido/${id}` : null;
+    const cliente = enviarConfirmacaoCliente(lead, linkPedido);
     const av = lead.avaliacao ?? (await avaliarESalvar(lead));
     await Promise.all([notificarLead(lead, av, baseUrl), cliente]);
   } catch (err) {

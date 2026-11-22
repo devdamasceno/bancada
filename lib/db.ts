@@ -349,3 +349,143 @@ export async function liberarEmail(id: string, campo: CampoEmail) {
   const { error } = await exigirSupabase().from("conversas").update({ [campo]: null }).eq("id", id);
   falhou("liberar o e-mail", error);
 }
+
+/* ---------- pagamento, domínio e site (supabase/005_pagamento_site.sql) ---------- */
+
+export type EstadoPedido = {
+  id: string;
+  numero: string | null;
+  status: string;
+  ficha: Ficha;
+  valorCobrado: number | null;
+  mpLink: string | null;
+  pagamentoStatus: "aguardando" | "aprovado" | "recusado" | "estornado" | null;
+  pagoEm: string | null;
+  dominio: string | null;
+  dominioStatus: "livre" | "ocupado" | "do_cliente" | "apontado" | "indefinido" | null;
+  siteSlug: string | null;
+  siteStatus: "na_fila" | "gerando" | "publicado" | "erro" | null;
+  siteUrl: string | null;
+  geracaoDisparadaEm: string | null;
+};
+
+export async function obterEstadoPedido(id: string): Promise<EstadoPedido | null> {
+  const { data: c, error } = await exigirSupabase()
+    .from("conversas")
+    .select(
+      "id, numero, status, ficha, valor_cobrado, mp_link, pagamento_status, pago_em, dominio, dominio_status, site_slug, site_status, site_url, geracao_disparada_em",
+    )
+    .eq("id", id)
+    .maybeSingle();
+  falhou("ler o pedido", error);
+  if (!c) return null;
+  return {
+    id: c.id,
+    numero: c.numero,
+    status: c.status,
+    ficha: { ...fichaVazia(), ...(c.ficha ?? {}) },
+    valorCobrado: c.valor_cobrado,
+    mpLink: c.mp_link,
+    pagamentoStatus: c.pagamento_status,
+    pagoEm: c.pago_em,
+    dominio: c.dominio,
+    dominioStatus: c.dominio_status,
+    siteSlug: c.site_slug,
+    siteStatus: c.site_status,
+    siteUrl: c.site_url,
+    geracaoDisparadaEm: c.geracao_disparada_em,
+  };
+}
+
+/** Grava o link de pagamento, o domínio pedido e o endereço provisório reservado. */
+export async function salvarCobranca(
+  id: string,
+  c: { valor: number; preferencia: string; link: string; dominio: string | null; dominioStatus: string | null; slug: string },
+) {
+  const { error } = await exigirSupabase()
+    .from("conversas")
+    .update({
+      valor_cobrado: c.valor,
+      mp_preferencia: c.preferencia,
+      mp_link: c.link,
+      pagamento_status: "aguardando",
+      dominio: c.dominio,
+      dominio_status: c.dominioStatus,
+      site_slug: c.slug,
+    })
+    .eq("id", id);
+  falhou("salvar a cobrança", error);
+}
+
+/** O endereço provisório já está em uso por outro pedido? */
+export async function slugEmUso(slug: string) {
+  const { data, error } = await exigirSupabase().from("conversas").select("id").eq("site_slug", slug).limit(1);
+  falhou("conferir o endereço", error);
+  return (data ?? []).length > 0;
+}
+
+/**
+ * Marca como pago. Devolve true só na primeira vez (o Mercado Pago repete avisos),
+ * para o site ser gerado uma única vez.
+ */
+export async function marcarPago(id: string, pagamentoId: string) {
+  const { data, error } = await exigirSupabase()
+    .from("conversas")
+    .update({ pagamento_status: "aprovado", mp_pagamento_id: pagamentoId, pago_em: new Date().toISOString() })
+    .eq("id", id)
+    .or("pagamento_status.is.null,pagamento_status.neq.aprovado")
+    .select("id");
+  falhou("marcar o pagamento", error);
+  return (data ?? []).length > 0;
+}
+
+export async function marcarPagamento(id: string, status: "recusado" | "estornado", pagamentoId: string) {
+  const { error } = await exigirSupabase()
+    .from("conversas")
+    .update({ pagamento_status: status, mp_pagamento_id: pagamentoId })
+    .eq("id", id)
+    .or(
+      status === "recusado"
+        ? "pagamento_status.is.null,pagamento_status.eq.aguardando" // uma tentativa recusada não desfaz um pagamento aprovado
+        : "pagamento_status.eq.aprovado",
+    );
+  falhou("atualizar o pagamento", error);
+}
+
+/** Reserva o disparo da geração. True só para quem reservou primeiro. */
+export async function reservarGeracao(id: string) {
+  const { data, error } = await exigirSupabase()
+    .from("conversas")
+    .update({ geracao_disparada_em: new Date().toISOString(), site_status: "na_fila" })
+    .eq("id", id)
+    .is("geracao_disparada_em", null)
+    .select("id");
+  falhou("reservar a geração", error);
+  return (data ?? []).length > 0;
+}
+
+export async function liberarGeracao(id: string, obs: string) {
+  const { error } = await exigirSupabase()
+    .from("conversas")
+    .update({ geracao_disparada_em: null, site_status: "erro", site_obs: obs.slice(0, 1000) })
+    .eq("id", id);
+  falhou("liberar a geração", error);
+}
+
+/** Atualização vinda da sessão que gera o site. */
+export async function atualizarSite(
+  id: string,
+  s: { status: "gerando" | "publicado" | "erro"; url?: string; obs?: string; dominioStatus?: string },
+) {
+  const { error } = await exigirSupabase()
+    .from("conversas")
+    .update({
+      site_status: s.status,
+      ...(s.url ? { site_url: s.url } : {}),
+      ...(s.obs ? { site_obs: s.obs.slice(0, 1000) } : {}),
+      ...(s.dominioStatus ? { dominio_status: s.dominioStatus } : {}),
+      ...(s.status === "publicado" ? { site_publicado_em: new Date().toISOString() } : {}),
+    })
+    .eq("id", id);
+  falhou("atualizar o site", error);
+}

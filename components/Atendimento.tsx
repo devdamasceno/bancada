@@ -43,6 +43,7 @@ export function Atendimento() {
   const [valor, setValor] = useState(0);
   const [salvoEm, setSalvoEm] = useState<string | null>(null);
   const [numeroPedido, setNumeroPedido] = useState<string | null>(null);
+  const [pagamento, setPagamento] = useState<{ link: string; acompanhar: string } | null>(null);
   const [enviandoPedido, setEnviandoPedido] = useState(false);
   const [erroPedido, setErroPedido] = useState<string | null>(null);
   const [novidades, setNovidades] = useState(false);
@@ -183,6 +184,7 @@ export function Atendimento() {
       const d = await r.json();
       if (!r.ok || !d.numero) throw new Error(d.erro);
       setNumeroPedido(d.numero);
+      if (d.pagamento && d.acompanhar) setPagamento({ link: d.pagamento, acompanhar: d.acompanhar });
       registrar("pedido_enviado", { servicos: ficha.servicos });
     } catch {
       setErroPedido(tf.erroEnvio);
@@ -290,6 +292,7 @@ export function Atendimento() {
             salvoEm={salvoEm}
             salvando={respondendo && !salvoEm}
             numeroPedido={numeroPedido}
+            pagamento={pagamento}
             enviando={enviandoPedido}
             erroEnvio={erroPedido}
             novidades={novidades}

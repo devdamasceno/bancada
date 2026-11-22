@@ -10,6 +10,8 @@ type Props = {
   salvoEm: string | null;
   salvando: boolean;
   numeroPedido: string | null;
+  /** Site de 1 página: link do Mercado Pago e a página para acompanhar. */
+  pagamento?: { link: string; acompanhar: string } | null;
   enviando: boolean;
   erroEnvio: string | null;
   novidades: boolean;
@@ -38,7 +40,7 @@ export function Ficha(p: Props) {
 
   const nomes = servicos.filter((s) => p.ficha.servicos.includes(s.id)).map((s) => s.nome);
   const valorDe = (c: string) => (c === "servicos" ? nomes.join(", ") : p.ficha[c as keyof TFicha]) as string | undefined;
-  const campos = [...CAMPOS_PROGRESSO, "observacoes"] as const;
+  const campos = [...CAMPOS_PROGRESSO, "dominio", "observacoes"] as const;
   const pronta = prontaParaEnviar(p.ficha);
 
   return (
@@ -68,7 +70,7 @@ export function Ficha(p: Props) {
       <dl id="ficha-campos">
         {campos.map((c) => {
           const v = valorDe(c);
-          if (c === "observacoes" && !v) return null;
+          if ((c === "observacoes" || c === "dominio") && !v) return null;
           const classes = ["campo", `campo-${c}`, v ? "ok" : "", novos.includes(c) ? "novo" : ""].join(" ");
           return (
             <div key={c} className={classes}>
@@ -87,7 +89,19 @@ export function Ficha(p: Props) {
       {p.numeroPedido ? (
         <div className="ficha-sucesso" role="status">
           <strong>{t.sucessoTitulo}</strong>
-          <p>{t.sucesso(p.numeroPedido)}</p>
+          {p.pagamento ? (
+            <>
+              <p>{t.sucessoPagar(p.numeroPedido)}</p>
+              <a className="fechar" href={p.pagamento.link}>
+                {t.pagar(p.valor ? formatarReais(p.valor) : "")}
+              </a>
+              <small className="ficha-dica">
+                {t.pagarDica} <a href={p.pagamento.acompanhar}>{t.acompanhar}</a>
+              </small>
+            </>
+          ) : (
+            <p>{t.sucesso(p.numeroPedido)}</p>
+          )}
         </div>
       ) : (
         <>

@@ -27,20 +27,22 @@ export const contexto = {
 
   /** Passo a passo depois que o cliente envia o pedido. */
   comoFunciona: [
-    "A equipe revisa o pedido e manda a proposta pelo WhatsApp ou e-mail em até 1 dia útil.",
+    "Só o site de 1 página (landing page, sem outros serviços juntos): ao enviar o pedido, o cliente já recebe o link de pagamento do Mercado Pago. Pagou, o site começa a ser feito na hora e fica no ar num endereço provisório (nome.kriai.online) para ele ver e pedir o ajuste incluído.",
+    "Demais pedidos (outros serviços ou site junto com outros serviços): a equipe revisa e manda a proposta pelo WhatsApp ou e-mail em até 1 dia útil.",
     "Com a proposta aprovada, o cliente paga 50% de entrada e o trabalho começa.",
     "O cliente recebe uma prévia, pede ajustes e só depois recebe a versão final.",
   ],
 
   /** Formas de pagamento. */
-  pagamento: "Pix ou cartão de crédito em até 3x. 50% na aprovação da proposta e 50% na entrega.",
+  pagamento:
+    "Site de 1 página sozinho: pagamento integral na hora, pelo Mercado Pago (Pix ou cartão em até 3x). Demais pedidos: Pix ou cartão em até 3x, 50% na aprovação da proposta e 50% na entrega.",
 
   /** Perguntas que os clientes costumam fazer, com a resposta certa. */
   perguntasFrequentes: [
     {
       pergunta: "O site fica no meu nome?",
       resposta:
-        "O cliente escolhe: o domínio pode ser registrado no nome dele, ou a Kriai registra e cuida de tudo. A gente explica as duas opções na proposta.",
+        "Sim. O domínio .com.br fica no CPF ou CNPJ do cliente: ele registra no Registro.br (cerca de R$ 40 por ano, pago direto a eles) com um passo a passo nosso, e a gente aponta o site para lá. Enquanto isso, o site já fica no ar num endereço provisório nome.kriai.online.",
     },
     {
       pergunta: "Precisa pagar mensalidade?",

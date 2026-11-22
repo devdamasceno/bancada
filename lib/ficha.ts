@@ -12,6 +12,8 @@ export type Ficha = {
   nome?: string;
   whatsapp?: string;
   email?: string;
+  /** Domínio que a pessoa quer (ex.: barbeariaesquina.com.br). Só faz sentido para site. */
+  dominio?: string;
   observacoes?: string;
 };
 
@@ -25,12 +27,16 @@ export const CAMPOS_TEXTO = [
   "nome",
   "whatsapp",
   "email",
+  "dominio",
   "observacoes",
 ] as const;
 export type CampoTexto = (typeof CAMPOS_TEXTO)[number];
 
-/** Campos que contam no progresso "x de 10" (observações é extra). */
-export const CAMPOS_PROGRESSO = ["servicos", ...CAMPOS_TEXTO.filter((c) => c !== "observacoes")] as const;
+/** Campos que contam no progresso "x de 10" (domínio e observações são extras). */
+export const CAMPOS_PROGRESSO = [
+  "servicos",
+  ...CAMPOS_TEXTO.filter((c): c is Exclude<CampoTexto, "observacoes" | "dominio"> => c !== "observacoes" && c !== "dominio"),
+] as const;
 
 const IDS = new Set<string>(servicos.map((s) => s.id));
 
@@ -79,3 +85,6 @@ export function mesclar(atual: Ficha, novo: Partial<Ficha>): Ficha {
   }
   return r;
 }
+
+/** Pedido que segue sozinho: só o site de 1 página, pago na hora pelo Mercado Pago e gerado automaticamente. */
+export const pagamentoAutomatico = (f: Ficha) => f.servicos.length === 1 && f.servicos[0] === "site";

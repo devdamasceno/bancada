@@ -2173,3 +2173,10 @@
     font-size: 1.3rem;
   }
 }
+
+/* página do pedido */
+.pedido .botao { display: inline-flex; padding: 14px 22px; background: var(--fita); color: var(--tinta-fita); border: var(--borda); }
+.pedido-etapas { list-style: none; padding: 0; margin: 20px 0 24px; display: grid; gap: 8px; }
+.pedido-etapas li { padding: 10px 14px; border: 1px solid var(--risco); color: var(--cinza); }
+.pedido-etapas li.ok { color: inherit; font-weight: 700; border-color: currentColor; }
+a.fechar { display: block; box-sizing: border-box; text-align: center; text-decoration: none; }
