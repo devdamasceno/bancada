@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { marca } from "@/content/site";
 import { Topo } from "@/components/Marca";
@@ -6,18 +7,28 @@ import { Rodape } from "@/components/Rodape";
 import { obterEstadoPedido, usandoArquivoLocal } from "@/lib/db";
 
 export const metadata: Metadata = { title: "Seu pedido", robots: { index: false, follow: false } };
-export const dynamic = "force-dynamic";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+type Params = Promise<{ id: string }>;
+type Busca = Promise<{ status?: string; collection_status?: string }>;
+
 /** Página do pedido: o cliente volta do Mercado Pago para cá e acompanha pagamento, site e domínio. */
-export default async function Pedido({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<{ status?: string; collection_status?: string }>;
-}) {
+export default function Pedido({ params, searchParams }: { params: Params; searchParams: Busca }) {
+  return (
+    <>
+      <Topo semCta />
+      <main className="politica pedido">
+        <Suspense fallback={<p className="rotulo">Carregando seu pedido…</p>}>
+          <Estado params={params} searchParams={searchParams} />
+        </Suspense>
+      </main>
+      <Rodape />
+    </>
+  );
+}
+
+async function Estado({ params, searchParams }: { params: Params; searchParams: Busca }) {
   const { id } = await params;
   const q = await searchParams;
   if (!UUID.test(id) || usandoArquivoLocal()) notFound();
@@ -40,8 +51,6 @@ export default async function Pedido({
   return (
     <>
       {!final && <meta httpEquiv="refresh" content="20" />}
-      <Topo semCta />
-      <main className="politica pedido">
         <p className="rotulo">Pedido nº {p.numero}</p>
         <h1>
           {p.siteStatus === "publicado"
@@ -123,8 +132,6 @@ export default async function Pedido({
         <p className="rotulo">
           Dúvidas: {marca.email}
         </p>
-      </main>
-      <Rodape />
     </>
   );
 }
