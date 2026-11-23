@@ -210,7 +210,7 @@ export async function prospectar(segmento: string, local: string, quantidade = 1
 }
 
 export async function listarProspects(f: { segmento?: string; local?: string; status?: string }) {
-  let q = exigirSupabase().from("prospects").select("*").order("pontuacao", { ascending: false }).order("criado_em", { ascending: false }).limit(200);
+  let q = exigirSupabase().from("prospects").select("*").order("pontuacao", { ascending: false }).order("criado_em", { ascending: false }).limit(1000);
   if (f.segmento) q = q.ilike("segmento", `%${f.segmento}%`);
   if (f.local) q = q.ilike("local", `%${f.local}%`);
   if (f.status && (STATUS_PROSPECT as readonly string[]).includes(f.status)) q = q.eq("status", f.status);
