@@ -249,7 +249,6 @@ function Siga() {
           <a className="btn btn-whats" href={whatsapp} target="_blank" rel="noopener noreferrer">
             <WhatsAppIcone /> {t.siga.whatsapp}
           </a>
-          <span className="nota">{marca.whatsapp}</span>
         </div>
       </div>
     </section>
