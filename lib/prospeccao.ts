@@ -43,7 +43,28 @@ export type Prospect = {
   status: StatusProspect;
   observacao: string | null;
   criado_em: string;
+  tentativas?: number;
+  contatado_em?: string | null;
+  pulado_em?: string | null;
 };
+
+/* ---------- categorias ---------- */
+
+export const TEMPERATURAS = ["quente", "morno", "frio"] as const;
+export type Temperatura = (typeof TEMPERATURAS)[number];
+
+/** Todo lead salvo já tem 50 pontos (sem site + telefone), então a régua começa daí. */
+export function temperatura(pontuacao: number): Temperatura {
+  if (pontuacao >= 80) return "quente";
+  if (pontuacao >= 65) return "morno";
+  return "frio";
+}
+
+/** Contatado uma vez há 2 dias ou mais: hora da segunda mensagem. */
+export function precisaAcompanhar(p: Pick<Prospect, "status" | "tentativas" | "contatado_em">) {
+  if (p.status !== "contatado" || (p.tentativas ?? 0) !== 1 || !p.contatado_em) return false;
+  return Date.now() - Date.parse(p.contatado_em) >= 2 * 86_400_000;
+}
 
 type Lugar = {
   id: string;
@@ -210,7 +231,7 @@ export async function prospectar(segmento: string, local: string, quantidade = 1
 }
 
 export async function listarProspects(f: { segmento?: string; local?: string; status?: string }) {
-  let q = exigirSupabase().from("prospects").select("*").order("pontuacao", { ascending: false }).order("criado_em", { ascending: false }).limit(200);
+  let q = exigirSupabase().from("prospects").select("*").order("pontuacao", { ascending: false }).order("criado_em", { ascending: false }).limit(500);
   if (f.segmento) q = q.ilike("segmento", `%${f.segmento}%`);
   if (f.local) q = q.ilike("local", `%${f.local}%`);
   if (f.status && (STATUS_PROSPECT as readonly string[]).includes(f.status)) q = q.eq("status", f.status);

@@ -2289,6 +2289,57 @@ a.fechar { display: block; box-sizing: border-box; text-align: center; text-deco
 .prosp-dica { margin: 0; font-size: 0.88rem; color: var(--cinza); }
 .prosp-dica a { color: var(--giz); }
 
+/* prospecção: resumo, categorias, grupos e badges */
+.prosp-resumo { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.5rem; margin: 0 0 1rem; }
+.prosp-resumo div { padding: 0.7rem 0.85rem; border: 1px solid var(--risco); background: var(--chapa); }
+.prosp-resumo dt { font-size: 0.78rem; color: var(--cinza); }
+.prosp-resumo dd { margin: 0.15rem 0 0; font: 700 1.6rem/1 var(--f-mono); }
+.prosp-resumo .r-quente { border-left: 3px solid #e0662f; }
+.prosp-resumo .r-alerta { border-left: 3px solid var(--fita); }
+.prosp-resumo .r-alerta dd { color: var(--fita); }
+.prosp-resumo .r-interessado { border-left: 3px solid #1f8a4c; }
+.prosp-filtros { display: grid; gap: 0.5rem; margin-bottom: 0.5rem; }
+.prosp-temps { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.prosp-temps a { padding: 0.25rem 0.65rem; font-size: 0.85rem; text-decoration: none; color: var(--cinza); border: 1px dashed var(--risco); }
+.prosp-temps a[aria-current="page"] { border-style: solid; border-color: currentColor; color: var(--giz); }
+.prosp-temps a.b-quente[aria-current="page"] { color: #b3471f; }
+.prosp-temps a.b-morno[aria-current="page"] { color: var(--fita); }
+.prosp-temps a.b-frio[aria-current="page"] { color: #1f6c99; }
+.prosp-conta { font: 700 0.75rem var(--f-mono); color: var(--apagado); margin-left: 0.15rem; }
+[aria-current="page"] .prosp-conta { color: inherit; }
+.prosp-grupo { margin-top: 1.5rem; }
+.prosp-grupo-cabeca { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0; font-size: 1rem; font-weight: 400; }
+summary.prosp-grupo-cabeca { cursor: pointer; list-style: none; }
+summary.prosp-grupo-cabeca::-webkit-details-marker { display: none; }
+summary.prosp-grupo-cabeca::before { content: "▸"; color: var(--cinza); }
+details[open] > summary.prosp-grupo-cabeca::before { content: "▾"; }
+.prosp-grupo .prosp-lista { margin-top: 0.6rem; }
+.prosp-badges { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.prosp-badge {
+  display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.72rem; font-weight: 700; line-height: 1;
+  padding: 0.28rem 0.55rem; border-radius: 999px; color: var(--cinza); background: var(--chapa); border: 1px solid var(--risco); white-space: nowrap;
+}
+.prosp-grupo-cabeca .prosp-badge { font-size: 0.82rem; padding: 0.35rem 0.75rem; }
+.prosp-badge.b-quente { color: #fff; background: #d4561f; border-color: #d4561f; }
+.prosp-badge.b-morno { color: var(--magenta-escuro); background: #fde6f1; border-color: #f4b3d3; }
+.prosp-badge.b-frio { color: #1f6c99; background: #e4f2fa; border-color: #b4d8ec; }
+.prosp-badge.st-novo { color: var(--tinta); background: var(--amarelo-claro); border-color: #efe08a; }
+.prosp-badge.st-contatado { color: #1f6c99; background: #fff; border-color: #6fa8c9; }
+.prosp-badge.st-interessado { color: #fff; background: #1f8a4c; border-color: #1f8a4c; }
+.prosp-badge.st-cliente { color: var(--tinta); background: var(--amarelo); border-color: var(--amarelo); }
+.prosp-badge.st-descartado { color: var(--apagado); background: #fff; text-decoration: line-through; }
+.prosp-badge.b-alerta { color: #fff; background: var(--fita); border-color: var(--fita); }
+.prosp-badge.b-zap { color: #0f6b3a; background: #e3f6ea; border-color: #a9dcbc; }
+.prosp-badge.b-insta { color: #8a2a6b; background: #f8e8f3; border-color: #e5bcd8; }
+.prosp-badge.b-sem-site { color: var(--tinta); background: #fff; border-style: dashed; }
+.prosp-badge.b-apagado { color: var(--apagado); background: #fff; }
+.prosp-item.st-interessado { border-left: 3px solid #1f8a4c; }
+.prosp-item.st-cliente { border-left: 3px solid var(--amarelo); }
+@media (max-width: 760px) {
+  .prosp-resumo { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .prosp-resumo div:first-child { grid-column: 1 / -1; }
+}
+
 /* ---------- painel: modo abordagem ---------- */
 .abord { display: grid; gap: 1rem; max-width: 720px; }
 .abord-placar { display: grid; grid-template-columns: auto 1fr auto; gap: 0.8rem; align-items: center; }
