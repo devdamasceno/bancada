@@ -2,29 +2,24 @@ import "server-only";
 import { marca } from "@/content/site";
 import { liberarGeracao, obterEstadoPedido, reservarGeracao } from "@/lib/db";
 import { emailBoasVindas, emailSiteNoAr } from "@/lib/emails-cliente";
-import { dispararGeracao, geracaoLigada } from "@/lib/geracao";
+import { pedirGeracao } from "@/lib/geracao";
 import { COR, botao, destinatariosAviso, emailValido, enviar, esc, moldura } from "@/lib/notificacao";
 
 /**
- * Pagou: coloca o site na fila (site_status = 'na_fila') uma única vez.
- * Com o disparo configurado (KRIAI_ROTINA_URL + KRIAI_ROTINA_TOKEN), chama na hora a tarefa
- * "Kriai · gerar site do pedido pago", que só roda quando há pedido. Sem o token, o pedido fica na fila
- * e o e-mail de pagamento aprovado traz o atalho para você tocar em "Executar agora".
+ * Pagou: põe o site na fila uma única vez e pede ao próprio site para gerar (/api/site/gerar).
+ * Se o pedido falhar, ele fica na fila e o painel tem o botão "Gerar site".
  */
 export async function iniciarGeracao(id: string, base: string) {
   const p = await obterEstadoPedido(id);
   if (!p?.numero || !p.siteSlug) return;
   if (!(await reservarGeracao(id))) return; // já está na fila ou foi disparado
-  if (!geracaoLigada()) return; // fica na fila até a tarefa ser executada
   try {
-    await dispararGeracao({ conversaId: id, numero: p.numero, slug: p.siteSlug, baseUrl: base });
+    await pedirGeracao(id, base);
   } catch (err) {
     console.error("[geracao]", id, err);
     await liberarGeracao(id, err instanceof Error ? err.message : String(err));
   }
 }
-
-const TAREFA_URL = process.env.KRIAI_TAREFA_URL || "https://claude.ai/code/routines";
 
 const linhaDominio = (dominio: string | null, status: string | null) =>
   !dominio
@@ -51,7 +46,7 @@ export async function notificarPagamento(id: string, base: string) {
 <p style="margin:0 0 6px">${esc(f.nome ?? "Cliente")}${f.negocio ? ` · ${esc(f.negocio)}` : ""} pagou R$ ${p.valorCobrado}.</p>
 <p style="margin:0 0 6px">Endereço provisório: ${esc(provisorio ?? "—")}</p>
 <p style="margin:0 0 18px">Domínio: ${esc(linhaDominio(p.dominio, p.dominioStatus))}</p>
-<p style="margin:0 0 18px">${geracaoLigada() ? "A geração do site já foi disparada." : `O site entrou na fila. Toque em <a href="${TAREFA_URL}">Executar agora</a> na tarefa de geração para criar o site.`}</p>
+<p style="margin:0 0 18px">O site já está sendo gerado. Se ele não aparecer em alguns minutos, use o botão "Gerar site" no painel.</p>
 ${botao(`${base}/admin/${id}`, "Abrir no painel", COR.breu)}`,
         { resumo: `Pagamento aprovado do pedido ${p.numero}` },
       );

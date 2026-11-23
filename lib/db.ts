@@ -486,3 +486,73 @@ export async function liberarGeracao(id: string, obs: string) {
   falhou("liberar a geração", error);
 }
 
+
+/* ---------- sites gerados (supabase/006_sites.sql) ---------- */
+
+export async function mensagensDaConversa(id: string) {
+  const { data, error } = await exigirSupabase()
+    .from("mensagens")
+    .select("papel, texto")
+    .eq("conversa_id", id)
+    .not("texto", "is", null)
+    .order("id");
+  falhou("ler a conversa", error);
+  return (data ?? []) as { papel: "user" | "assistant"; texto: string }[];
+}
+
+export async function salvarSiteGerado(s: { slug: string; conversaId: string; html: string; modelo: string }) {
+  const db = exigirSupabase();
+  const { data: atual } = await db.from("sites").select("versao").eq("slug", s.slug).maybeSingle();
+  const { error } = await db.from("sites").upsert({
+    slug: s.slug,
+    conversa_id: s.conversaId,
+    html: s.html,
+    modelo: s.modelo,
+    versao: (atual?.versao ?? 0) + 1,
+    atualizado_em: new Date().toISOString(),
+  });
+  falhou("salvar o site", error);
+}
+
+/** HTML do site pelo endereço: <slug>.kriai.online ou o domínio próprio do cliente. */
+export async function siteDoEndereco(host: string) {
+  const h = host.toLowerCase().replace(/:\d+$/, "").replace(/^www\./, "");
+  const db = exigirSupabase();
+  let slug: string | null = null;
+  if (h.endsWith(".kriai.online")) slug = h.slice(0, -".kriai.online".length);
+  else {
+    const { data } = await db.from("conversas").select("site_slug").eq("dominio", h).not("site_slug", "is", null).limit(1);
+    slug = data?.[0]?.site_slug ?? null;
+  }
+  if (!slug || !/^[a-z0-9-]{1,63}$/.test(slug)) return null;
+  const { data, error } = await db.from("sites").select("html, atualizado_em").eq("slug", slug).maybeSingle();
+  falhou("ler o site", error);
+  return data as { html: string; atualizado_em: string } | null;
+}
+
+/** Marca o andamento da geração feita pelo próprio site. */
+export async function marcarSite(id: string, s: { status: "gerando" | "publicado" | "erro"; url?: string; obs?: string }) {
+  const { error } = await exigirSupabase()
+    .from("conversas")
+    .update({
+      site_status: s.status,
+      ...(s.url ? { site_url: s.url } : {}),
+      ...(s.obs ? { site_obs: s.obs.slice(0, 1000) } : {}),
+      ...(s.status === "publicado" ? { site_publicado_em: new Date().toISOString() } : {}),
+    })
+    .eq("id", id);
+  falhou("atualizar o site", error);
+}
+
+/** Trava para não gerar o mesmo site duas vezes ao mesmo tempo. True só para quem pegou. */
+export async function pegarGeracao(id: string) {
+  const { data, error } = await exigirSupabase()
+    .from("conversas")
+    .update({ site_status: "gerando" })
+    .eq("id", id)
+    .eq("pagamento_status", "aprovado")
+    .or("site_status.is.null,site_status.eq.na_fila,site_status.eq.erro")
+    .select("id");
+  falhou("pegar a geração", error);
+  return (data ?? []).length > 0;
+}

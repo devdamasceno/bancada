@@ -1,36 +1,27 @@
 import "server-only";
+import { notificarSitePublicado } from "@/lib/automacao";
+import { pegarGeracao, reservarAvisoSite } from "@/lib/db";
+import { gerarSite } from "@/lib/gerador";
 
-// Dispara a sessão agendada do Claude que gera e publica o site do cliente.
-// Variáveis na Vercel (copiadas da tela da sessão agendada, em claude.ai/code/routines > gatilho API):
-//   KRIAI_ROTINA_URL   → https://api.anthropic.com/v1/claude_code/routines/<id>/fire
-//   KRIAI_ROTINA_TOKEN → token sk-ant-oat01-... gerado no mesmo lugar
-// O endpoint não tem chave de idempotência: quem chama esta função precisa garantir um disparo só por pedido.
+/**
+ * Gera o site de um pedido pago e avisa o cliente. Uma geração por vez por pedido (trava no banco).
+ * Roda dentro de uma função com tempo longo (/api/site/gerar ou ação do painel).
+ */
+export async function gerarEAvisar(id: string, base: string) {
+  if (!(await pegarGeracao(id))) return { ok: false as const, motivo: "ja_gerando_ou_publicado" };
+  const url = await gerarSite(id);
+  if (await reservarAvisoSite(id)) await notificarSitePublicado(id, base);
+  return { ok: true as const, url };
+}
 
-export const geracaoLigada = () => !!process.env.KRIAI_ROTINA_URL && !!process.env.KRIAI_ROTINA_TOKEN;
-
-export async function dispararGeracao(p: { conversaId: string; numero: string; slug: string; baseUrl: string }) {
-  const url = process.env.KRIAI_ROTINA_URL;
-  const tokenRotina = process.env.KRIAI_ROTINA_TOKEN;
-  if (!url || !tokenRotina) throw new Error("KRIAI_ROTINA_URL ou KRIAI_ROTINA_TOKEN não configurados");
-  const r = await fetch(url, {
+/** Pede ao próprio site para gerar (em outra função, com tempo próprio), sem esperar o fim. */
+export async function pedirGeracao(id: string, base: string) {
+  const segredo = process.env.KRIAI_AUTOMACAO_SEGREDO;
+  if (!segredo) throw new Error("KRIAI_AUTOMACAO_SEGREDO não configurado");
+  const r = await fetch(`${base}/api/site/gerar`, {
     method: "POST",
-    headers: {
-      Authorization: `Bearer ${tokenRotina}`,
-      "anthropic-version": "2026-10-21",
-      "anthropic-beta": "experimental-cc-routine-2026-04-01",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      text: [
-        `Pedido pago: nº ${p.numero}`,
-        `conversa_id: ${p.conversaId}`,
-        `slug: ${p.slug}`,
-        `endereco_provisorio: https://${p.slug}.kriai.online`,
-        `retorno: ${p.baseUrl}/api/site/status`,
-      ].join("\n"),
-    }),
+    headers: { Authorization: `Bearer ${segredo}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ conversaId: id }),
   });
-  if (!r.ok) throw new Error(`Sessão agendada respondeu ${r.status}: ${await r.text()}`);
-  const d = await r.json().catch(() => ({}));
-  return (d.claude_code_session_url as string | undefined) ?? null;
+  if (!r.ok && r.status !== 409) throw new Error(`/api/site/gerar respondeu ${r.status}`);
 }

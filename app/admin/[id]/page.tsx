@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ficha as rotulos, servicos } from "@/content/site";
 import { exigirAdmin } from "@/lib/admin";
-import { obterLead } from "@/lib/db";
+import { obterEstadoPedido, obterLead } from "@/lib/db";
 import { linkWhatsApp } from "@/lib/notificacao";
 import { BotaoAcao, Copiar } from "../componentes";
 import { dataHora, reais, ROTULO_SITUACAO, ROTULO_TEMPERATURA } from "../formato";
@@ -29,7 +29,7 @@ async function Detalhe({ params }: { params: PageProps<"/admin/[id]">["params"] 
   await exigirAdmin();
   const { id } = await params;
   if (!UUID.test(id)) notFound();
-  const lead = await obterLead(id);
+  const [lead, pedido] = await Promise.all([obterLead(id), obterEstadoPedido(id)]);
   if (!lead) notFound();
 
   const f = lead.ficha;
@@ -180,6 +180,35 @@ async function Detalhe({ params }: { params: PageProps<"/admin/[id]">["params"] 
               <BotaoAcao id={lead.id} tipo="cliente" rotulo="Enviar confirmação ao cliente" rotuloPendente="Enviando…" />
             )}
           </dd>
+          {pedido?.pagamentoStatus && (
+            <>
+              <dt>Pagamento</dt>
+              <dd>
+                {pedido.pagamentoStatus === "aprovado"
+                  ? `aprovado${pedido.pagoEm ? ` em ${dataHora(pedido.pagoEm)}` : ""} · R$ ${pedido.valorCobrado}`
+                  : pedido.pagamentoStatus}
+              </dd>
+              <dt>Site</dt>
+              <dd>
+                {pedido.siteUrl && pedido.siteStatus === "publicado" ? (
+                  <a href={pedido.siteUrl} target="_blank" rel="noopener noreferrer">
+                    {pedido.siteUrl}
+                  </a>
+                ) : (
+                  <span className="adm-apagado">{pedido.siteStatus ?? "aguardando pagamento"}</span>
+                )}
+                {pedido.dominio && <span className="adm-apagado"> · domínio {pedido.dominio}</span>}
+                {pedido.pagamentoStatus === "aprovado" && pedido.siteStatus !== "gerando" && (
+                  <BotaoAcao
+                    id={lead.id}
+                    tipo="site"
+                    rotulo={pedido.siteStatus === "publicado" ? "Gerar o site de novo" : "Gerar site"}
+                    rotuloPendente="Pedindo…"
+                  />
+                )}
+              </dd>
+            </>
+          )}
           <dt>E-mail de aviso</dt>
           <dd>
             {lead.notificadaEm ? (

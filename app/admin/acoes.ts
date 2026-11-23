@@ -4,7 +4,8 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { refresh } from "next/cache";
 import { abrirSessao, bloqueado, exigirAdmin, fecharSessao, registrarErro, senhaConfere } from "@/lib/admin";
-import { obterLead } from "@/lib/db";
+import { marcarSite, obterEstadoPedido, obterLead } from "@/lib/db";
+import { pedirGeracao } from "@/lib/geracao";
 import { avaliarESalvar, enviarConfirmacaoCliente, notificarLead, type ResultadoCliente } from "@/lib/notificacao";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -76,4 +77,23 @@ export async function emailCliente(_: EstadoAcao, dados: FormData): Promise<Esta
   const r = await enviarConfirmacaoCliente(lead);
   refresh();
   return MENSAGEM_CLIENTE[r];
+}
+
+/** Gera (ou gera de novo) o site de um pedido pago. A geração roda em /api/site/gerar e leva alguns minutos. */
+export async function gerarSiteAgora(_: EstadoAcao, dados: FormData): Promise<EstadoAcao> {
+  await exigirAdmin();
+  const id = String(dados.get("id") ?? "");
+  if (!UUID.test(id)) return { erro: "Contato inválido." };
+  const p = await obterEstadoPedido(id);
+  if (!p || p.pagamentoStatus !== "aprovado") return { erro: "Só para pedido com pagamento aprovado." };
+  if (p.siteStatus === "gerando") return { erro: "Já está gerando. Aguarde alguns minutos." };
+  const h = await headers();
+  const base = process.env.SITE_URL?.replace(/\/$/, "") || `https://${h.get("host")}`;
+  try {
+    await marcarSite(id, { status: "erro", obs: "gerando de novo pelo painel" }); // libera a trava
+    await pedirGeracao(id, base);
+    return { ok: "Gerando. O site aparece em alguns minutos e o cliente recebe o e-mail." };
+  } catch (err) {
+    return { erro: err instanceof Error ? err.message : "Não foi possível gerar." };
+  }
 }

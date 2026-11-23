@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { emailCliente, entrar, reavaliar, reenviarEmail, sair, type EstadoAcao, type EstadoEntrar } from "./acoes";
+import { emailCliente, entrar, gerarSiteAgora, reavaliar, reenviarEmail, sair, type EstadoAcao, type EstadoEntrar } from "./acoes";
 
 export function FormEntrar() {
   const [estado, acao, pendente] = useActionState<EstadoEntrar, FormData>(entrar, {});
@@ -31,7 +31,7 @@ export function BotaoSair() {
   );
 }
 
-const ACOES = { reavaliar, reenviar: reenviarEmail, cliente: emailCliente };
+const ACOES = { reavaliar, reenviar: reenviarEmail, cliente: emailCliente, site: gerarSiteAgora };
 
 export function BotaoAcao({
   id,
@@ -40,7 +40,7 @@ export function BotaoAcao({
   rotuloPendente,
 }: {
   id: string;
-  tipo: "reavaliar" | "reenviar" | "cliente";
+  tipo: "reavaliar" | "reenviar" | "cliente" | "site";
   rotulo: string;
   rotuloPendente: string;
 }) {
