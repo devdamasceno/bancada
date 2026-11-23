@@ -2248,3 +2248,28 @@ a.fechar { display: block; box-sizing: border-box; text-align: center; text-deco
   .hero-robo { animation: robo-flutua 9s ease-in-out infinite alternate; }
   @keyframes robo-flutua { to { transform: translateY(-53%) rotate(-3deg); } }
 }
+
+/* ---------- painel: prospecção no Google ---------- */
+.prosp-busca { display: grid; gap: 0.75rem; margin-bottom: 1.25rem; }
+.prosp-campos { display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.75rem; align-items: end; }
+.prosp-campos label, .prosp-filtro { display: grid; gap: 0.35rem; font-size: 0.9rem; }
+.prosp-campos input, .prosp-filtro input, .prosp-status select {
+  padding: 0.65rem 0.75rem; color: var(--giz); background: var(--chapa); border: 1px solid var(--risco); font: inherit;
+}
+.prosp-campos button { padding: 0.7rem 1rem; font-weight: 700; }
+.prosp-filtro { grid-template-columns: 1fr 1fr auto; gap: 0.5rem; margin: 0 0 0.75rem; }
+.prosp-lista { list-style: none; padding: 0; margin: 1rem 0; display: grid; gap: 0.6rem; }
+.prosp-item { display: grid; grid-template-columns: auto 1fr auto; gap: 1rem; align-items: start; padding: 1rem; border: 1px solid var(--risco); }
+.prosp-item.st-descartado { opacity: 0.55; }
+.prosp-corpo { display: grid; gap: 0.3rem; min-width: 0; }
+.prosp-motivos { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.prosp-motivos em { font-style: normal; font-size: 0.78rem; padding: 0.15rem 0.5rem; border: 1px solid var(--risco); }
+.prosp-links { display: flex; flex-wrap: wrap; gap: 0.5rem 0.9rem; align-items: center; font-size: 0.9rem; margin-top: 0.25rem; }
+.prosp-status { display: flex; gap: 0.4rem; align-items: center; }
+@media (max-width: 760px) {
+  .prosp-campos, .prosp-filtro { grid-template-columns: 1fr; }
+  .prosp-item { grid-template-columns: auto 1fr; }
+  .prosp-status { grid-column: 1 / -1; }
+}
+.prosp-atalho { display: flex; gap: 0.6rem; align-items: center; }
+.prosp-atalho a { text-decoration: none; }

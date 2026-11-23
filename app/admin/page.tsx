@@ -55,7 +55,12 @@ async function Lista({ searchParams }: { searchParams: PageProps<"/admin">["sear
     <>
       <div className="adm-cabeca">
         <h1>Contatos</h1>
-        <BotaoSair />
+        <span className="prosp-atalho">
+          <Link href="/admin/prospeccao" className="adm-botao-fita adm-pequeno">
+            Prospectar no Google
+          </Link>
+          <BotaoSair />
+        </span>
       </div>
 
       <nav className="adm-filtros" aria-label="Filtrar contatos">

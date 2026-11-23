@@ -238,7 +238,7 @@ export type LeadCompleto = {
   mensagens: { papel: "cliente" | "ia"; texto: string; em: string }[];
 };
 
-function exigirSupabase() {
+export function exigirSupabase() {
   const db = supabase();
   if (!db) throw new Error("A área administrativa precisa do Supabase: preencha SUPABASE_URL e SUPABASE_SECRET_KEY.");
   return db;
