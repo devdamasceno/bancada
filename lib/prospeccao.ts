@@ -272,13 +272,12 @@ export function exemploDoSegmento(segmento: string) {
   return "https://www.kriai.online/portfolio";
 }
 
-/** Abordagem sem oferta: só puxa conversa. Preço e exemplo entram depois que a pessoa responder. */
 export function mensagemAbordagem(p: Pick<Prospect, "nome" | "segmento" | "local">, etapa: "primeira" | "acompanhamento") {
-  const cidade = p.local.split(",")[0].trim();
   if (etapa === "acompanhamento") {
-    return `Oi, pessoal da ${p.nome}! Passando de novo para saber se conseguem me responder. Se não for um bom momento, tudo bem, obrigado mesmo assim! 😊`;
+    const exemplo = exemploDoSegmento(p.segmento);
+    return `Oi, pessoal da ${p.nome}! Passando só para deixar o exemplo que comentei: ${exemplo}. Se fizer sentido, é só me chamar. Se não for o momento, sem problema!`;
   }
-  return `Oi, tudo bem? Aqui é o Sérgio, da Kriai. Encontrei a ${p.nome} no Google procurando ${p.segmento} em ${cidade}. Posso fazer uma pergunta rápida sobre como os clientes chegam até vocês hoje?`;
+  return `Olá, tudo bem? Vi o perfil da ${p.nome} no Google e reparei que vocês ainda não têm um site. Sou da Kriai: fazemos landing pages para ${p.segmento} a partir de R$ 397, prontas no mesmo dia, com botão direto para o WhatsApp de vocês. Posso te mostrar um exemplo?`;
 }
 
 export async function registrarEnvio(placeId: string) {
