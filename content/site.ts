@@ -44,7 +44,7 @@ export const servicos: Servico[] = [
     unidade: "",
     inclui: "Site de 1 página (landing page) com botão de WhatsApp, formulário, versão para celular e 1 rodada de ajustes.",
     foraDoPrecoDeEntrada: "Mais páginas, agendamento online, loja virtual, blog, domínio e hospedagem.",
-    prazo: "3 dias",
+    prazo: "no mesmo dia",
     gatilhos: ["site", "landing", "pagina", "loja", "e-commerce", "ecommerce", "agendamento", "cardapio", "portfolio", "blog", "dominio"],
   },
   {

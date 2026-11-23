@@ -170,7 +170,7 @@ function Precos() {
                   <th scope="row">
                     {s.nome}
                     <small>
-                      {s.inclui} {s.prazo === "mensal" ? "Todo mês." : `Pronto em ${s.prazo}.`}
+                      {s.inclui} {s.prazo === "mensal" ? "Todo mês." : `Pronto ${s.prazo.startsWith("no ") ? s.prazo : `em ${s.prazo}`}.`}
                     </small>
                   </th>
                   <td>
