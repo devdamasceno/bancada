@@ -74,7 +74,9 @@ function blocoDns(p: EstadoPedido) {
       texto: "Quando quiser um endereço próprio (ex.: seunegocio.com.br), responda este e-mail que a gente ajuda.",
     };
   }
-  const g = guiaDo(p.dominio.endsWith(".br") && !p.ficha.registrador ? "registro.br" : p.ficha.registrador);
+  // .com.br ainda livre: o cliente registra no Registro.br, então o DNS também fica lá
+  const noRegistroBr = p.dominio.endsWith(".br") && (p.dominioStatus === "livre" || !p.ficha.registrador);
+  const g = guiaDo(noRegistroBr ? "registro.br" : p.ficha.registrador);
   const registrar =
     p.dominioStatus === "livre"
       ? `<p style="margin:0 0 12px"><b>1. Registre o domínio.</b> ${esc(p.dominio)} estava livre quando conferimos. Registre em <a href="https://registro.br" style="color:${COR.texto}">registro.br</a> no seu CPF ou CNPJ (cerca de R$ 40 por ano, pago direto a eles). Assim ele fica no seu nome.</p>`
@@ -89,7 +91,8 @@ function blocoDns(p: EstadoPedido) {
 <table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;margin:0 0 12px;font-size:14px"><tr><th style="padding:8px 10px;border:1px solid #ddd;text-align:left">Tipo</th><th style="padding:8px 10px;border:1px solid #ddd;text-align:left">Nome</th><th style="padding:8px 10px;border:1px solid #ddd;text-align:left">Valor</th></tr>${tabela}</table>
 <p style="margin:0 0 8px"><b>Não mexa nos registros MX nem nos TXT do seu e-mail.</b> Eles fazem seu e-mail funcionar e continuam do jeito que estão.</p>
 <p style="margin:0 0 8px"><b>${n + 2}. Pronto.</b> A mudança leva de alguns minutos a algumas horas para valer. O cadeado (https) é ativado sozinho.</p>
-<p style="margin:0 0 12px">Se o painel do Registro.br não mostrar a zona DNS, ative "Utilizar os servidores DNS do Registro.br" primeiro. Travou em algum passo? Mande um print pelo WhatsApp que a gente faz junto com você.</p>`;
+${g.painel === "Registro.br" ? `<p style="margin:0 0 8px">Se o Registro.br não mostrar a zona DNS, ative antes "Utilizar os servidores DNS do Registro.br".</p>` : ""}
+<p style="margin:0 0 12px">Travou em algum passo? Mande um print pelo WhatsApp que a gente faz junto com você.</p>`;
   const texto = [
     p.dominioStatus === "livre" ? `1. Registre ${p.dominio} em registro.br no seu CPF ou CNPJ (cerca de R$ 40/ano).` : "",
     `${n}. Abra o DNS no ${g.painel}: ${g.caminho}.`,
