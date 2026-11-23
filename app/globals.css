@@ -2316,13 +2316,14 @@ a.fechar { display: block; box-sizing: border-box; text-align: center; text-deco
 /* ---------- prospecção: lista com filtros instantâneos ---------- */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .ico { flex: none; vertical-align: -0.15em; }
-.pl { display: grid; gap: 0.85rem; }
+.pl { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.85rem; min-width: 0; }
+.pl > * { min-width: 0; }
 .pl button, .pl select, .pl input, .pl a { font: inherit; }
 .pl :focus-visible { outline: 2px solid var(--ciano); outline-offset: 2px; }
 .pl-filtros { display: grid; grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
-.pl-filtros select, .pl-texto { min-height: 44px; border: 1.5px solid var(--tinta); background: var(--papel); color: var(--tinta); padding: 0 0.7rem; border-radius: 0; }
+.pl-filtros select, .pl-texto { min-width: 0; width: 100%; min-height: 44px; border: 1.5px solid var(--tinta); background: var(--papel); color: var(--tinta); padding: 0 0.7rem; border-radius: 0; }
 .pl-texto { display: flex; align-items: center; gap: 0.5rem; }
-.pl-texto input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; padding: 0.6rem 0; }
+.pl-texto input { flex: 1; min-width: 0; width: 100%; border: 0; outline: 0; background: transparent; padding: 0.6rem 0; }
 .pl-texto:focus-within { box-shadow: 4px 4px 0 var(--ciano); }
 .pl-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .pl-chips button { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 36px; padding: 0 0.8rem; border: 1.5px solid var(--risco); background: var(--papel); color: var(--cinza); border-radius: 999px; cursor: pointer; font-size: 0.88rem; }
@@ -2381,8 +2382,8 @@ a.fechar { display: block; box-sizing: border-box; text-align: center; text-deco
 .pl-mini:hover { border-color: var(--tinta); color: var(--tinta); }
 .pl-mini.ok:hover { background: var(--amarelo); }
 @media (max-width: 760px) {
-  .pl-filtros { grid-template-columns: 1fr 1fr; }
-  .pl-texto { grid-column: 1 / -1; }
+  .pl-filtros { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pl-texto, .pl-filtros select:last-child { grid-column: 1 / -1; }
   .pl-item { grid-template-columns: auto minmax(0, 1fr); gap: 0.75rem; padding: 0.85rem; }
   .pl-nota { width: 52px; height: 52px; }
   .pl-nota strong { font-size: 1.3rem; }

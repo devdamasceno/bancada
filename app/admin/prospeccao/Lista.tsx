@@ -212,7 +212,7 @@ export function ListaLeads({ leads: iniciais, segmentoInicial, localInicial }: {
         <label className="pl-texto">
           <IcoBusca />
           <span className="sr-only">Buscar por nome, endereço ou telefone</span>
-          <input type="search" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder="Buscar por nome, endereço ou telefone" />
+          <input type="search" value={texto} onChange={(e) => setTexto(e.target.value)} placeholder="Nome, endereço ou telefone" />
         </label>
         <select value={segmento} onChange={(e) => setSegmento(e.target.value)} aria-label="Segmento">
           <option value="">Todos os segmentos</option>
