@@ -44,7 +44,11 @@ export function FormBusca({ segmento, local }: { segmento?: string; local?: stri
       </ul>
       {(segmento || local) && (
         <p className="prosp-dica">
-          Mostrando os leads salvos de {[segmento, local].filter(Boolean).join(" em ")}. <Link href="/admin/prospeccao">Ver todos</Link>
+          Mostrando os leads salvos de {[segmento, local].filter(Boolean).join(" em ")}.{" "}
+          <Link href={`/admin/prospeccao/abordagem?${new URLSearchParams({ ...(segmento ? { segmento } : {}), ...(local ? { local } : {}) })}`}>
+            Abordar estes
+          </Link>{" "}
+          · <Link href="/admin/prospeccao">Ver todos</Link>
         </p>
       )}
       {pendente && <p className="prosp-dica">Lendo até 60 empresas no Google… leva uns 10 segundos.</p>}

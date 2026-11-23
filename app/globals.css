@@ -2288,3 +2288,27 @@ a.fechar { display: block; box-sizing: border-box; text-align: center; text-deco
 .prosp-regras b { color: var(--giz); font-weight: 700; }
 .prosp-dica { margin: 0; font-size: 0.88rem; color: var(--cinza); }
 .prosp-dica a { color: var(--giz); }
+
+/* ---------- painel: modo abordagem ---------- */
+.abord { display: grid; gap: 1rem; max-width: 720px; }
+.abord-placar { display: grid; grid-template-columns: auto 1fr auto; gap: 0.8rem; align-items: center; }
+.abord-barra { height: 8px; background: var(--chapa); border: 1px solid var(--risco); }
+.abord-barra i { display: block; height: 100%; background: var(--fita); transition: width 0.3s; }
+.abord-cartao { display: grid; gap: 0.6rem; padding: 1.25rem; }
+.abord-cartao h2 { margin: 0; font-size: 1.4rem; }
+.abord-topo { display: flex; justify-content: space-between; align-items: center; }
+.abord-etapa { font-size: 0.78rem; font-weight: 700; padding: 0.2rem 0.6rem; border: 1px solid var(--risco); }
+.abord-etapa.acompanhamento { border-color: var(--fita); color: var(--giz); }
+.abord-msg { display: grid; gap: 0.35rem; font-size: 0.88rem; color: var(--cinza); margin-top: 0.4rem; }
+.abord-msg textarea {
+  width: 100%; padding: 0.75rem; font: inherit; font-size: 0.95rem; line-height: 1.5;
+  color: var(--giz); background: var(--chapa); border: 1px solid var(--risco); resize: vertical;
+}
+.abord-acoes { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 0.4rem; }
+.abord-enviar { padding: 0.85rem 1.3rem; font-weight: 700; font-size: 1rem; text-decoration: none; }
+.abord-fim { display: grid; gap: 0.6rem; justify-items: start; padding: 1.5rem; }
+@media (max-width: 600px) {
+  .abord-placar { grid-template-columns: auto 1fr; }
+  .abord-placar .prosp-dica { grid-column: 1 / -1; }
+  .abord-enviar { width: 100%; text-align: center; justify-content: center; }
+}

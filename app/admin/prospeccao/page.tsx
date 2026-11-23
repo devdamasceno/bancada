@@ -26,9 +26,14 @@ export default function Prospeccao({ searchParams }: { searchParams: Busca }) {
     <main className="adm-conteudo">
       <div className="adm-cabeca">
         <h1>Prospecção no Google</h1>
-        <Link href="/admin" className="rotulo">
-          ← Contatos do site
-        </Link>
+        <span className="prosp-atalho">
+          <Link href="/admin/prospeccao/abordagem" className="adm-botao-fita adm-pequeno">
+            Modo abordagem
+          </Link>
+          <Link href="/admin" className="rotulo">
+            ← Contatos do site
+          </Link>
+        </span>
       </div>
       <Suspense fallback={<p className="rotulo">Carregando…</p>}>
         <Conteudo searchParams={searchParams} />

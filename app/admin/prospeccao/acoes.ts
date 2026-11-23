@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { exigirAdmin } from "@/lib/admin";
-import { mudarStatusProspect, prospectar, STATUS_PROSPECT, type StatusProspect } from "@/lib/prospeccao";
+import { mudarStatusProspect, prospectar, pularProspect, registrarEnvio, STATUS_PROSPECT, type StatusProspect } from "@/lib/prospeccao";
 
 export type EstadoBusca = { ok?: string; erro?: string; segmento?: string; local?: string };
 
@@ -40,4 +40,20 @@ export async function marcarProspect(dados: FormData) {
   if (!id || !(STATUS_PROSPECT as readonly string[]).includes(status)) return;
   await mudarStatusProspect(id, status);
   revalidatePath("/admin/prospeccao");
+}
+
+export async function enviadoNaAbordagem(id: string) {
+  await exigirAdmin();
+  await registrarEnvio(id);
+}
+
+export async function pularNaAbordagem(id: string) {
+  await exigirAdmin();
+  await pularProspect(id);
+}
+
+export async function statusNaAbordagem(id: string, status: StatusProspect) {
+  await exigirAdmin();
+  if (!(STATUS_PROSPECT as readonly string[]).includes(status)) return;
+  await mudarStatusProspect(id, status);
 }

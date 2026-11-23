@@ -223,3 +223,82 @@ export async function mudarStatusProspect(placeId: string, status: StatusProspec
   const { error } = await exigirSupabase().from("prospects").update({ status, atualizado_em: new Date().toISOString() }).eq("place_id", placeId);
   if (error) throw new Error(error.message);
 }
+
+/* ---------- modo abordagem ---------- */
+
+const DIAS_ACOMPANHAR = 2;
+
+export type ItemFila = Prospect & { etapa: "primeira" | "acompanhamento"; tentativas: number; contatado_em: string | null };
+
+/** Fila do dia: primeiro os acompanhamentos vencidos, depois os novos por pontuação. Pulados vão para o fim. */
+export async function filaAbordagem(f: { segmento?: string; local?: string }) {
+  const db = exigirSupabase();
+  const limite = new Date(Date.now() - DIAS_ACOMPANHAR * DIA).toISOString();
+  // começo do dia em Brasília (UTC-3)
+  const inicioDia = new Date(Math.floor((Date.now() - 3 * 3600_000) / DIA) * DIA + 3 * 3600_000).toISOString();
+  let qAcomp = db.from("prospects").select("*").eq("status", "contatado").eq("tentativas", 1).lte("contatado_em", limite);
+  let qNovos = db.from("prospects").select("*").eq("status", "novo");
+  if (f.segmento) {
+    qAcomp = qAcomp.ilike("segmento", `%${f.segmento}%`);
+    qNovos = qNovos.ilike("segmento", `%${f.segmento}%`);
+  }
+  if (f.local) {
+    qAcomp = qAcomp.ilike("local", `%${f.local}%`);
+    qNovos = qNovos.ilike("local", `%${f.local}%`);
+  }
+  const [acomp, novos, hoje] = await Promise.all([
+    qAcomp.order("contatado_em", { ascending: true }).limit(50),
+    qNovos.order("pulado_em", { ascending: true, nullsFirst: true }).order("pontuacao", { ascending: false }).limit(50),
+    db.from("prospects").select("place_id", { count: "exact", head: true }).gte("contatado_em", inicioDia),
+  ]);
+  if (acomp.error) throw new Error(acomp.error.message);
+  if (novos.error) throw new Error(novos.error.message);
+  const fila: ItemFila[] = [
+    ...(acomp.data ?? []).map((p) => ({ ...(p as ItemFila), etapa: "acompanhamento" as const })),
+    ...(novos.data ?? []).map((p) => ({ ...(p as ItemFila), etapa: "primeira" as const })),
+  ];
+  return { fila, enviadosHoje: hoje.count ?? 0 };
+}
+
+/** Exemplo do portfólio que combina com o segmento. */
+export function exemploDoSegmento(segmento: string) {
+  const s = segmento.toLowerCase();
+  if (/personal|academia|treino|fitness|crossfit|pilates/.test(s)) return "https://personal.kriai.online";
+  if (/barbe|salão|salao|cabel|beleza|estética|estetica|unha|manicure/.test(s)) return "https://barbearia.kriai.online";
+  if (/bolo|confeit|doce|padaria|café|cafe|brigadeiro/.test(s)) return "https://bolos.kriai.online";
+  if (/fisio|clínica|clinica|consult|dent|odonto|psic|nutri|terapia|saúde|saude/.test(s)) return "https://fisio.kriai.online";
+  if (/pizz|restaurante|lanch|hamburg|delivery|comida|marmit|açaí|acai/.test(s)) return "https://pizzaria.kriai.online";
+  if (/consórcio|consorcio|seguro|corretor|financ/.test(s)) return "https://joaobala.kriai.online";
+  return "https://www.kriai.online/portfolio";
+}
+
+export function mensagemAbordagem(p: Pick<Prospect, "nome" | "segmento" | "local">, etapa: "primeira" | "acompanhamento") {
+  const exemplo = exemploDoSegmento(p.segmento);
+  const cidade = p.local.split(",")[0].trim();
+  if (etapa === "acompanhamento") {
+    return `Oi, pessoal da ${p.nome}! Passando só para deixar o exemplo que comentei: ${exemplo}. Se fizer sentido, monto o de vocês hoje mesmo. Se não for o momento, sem problema, é só me avisar que não chamo mais.`;
+  }
+  return `Oi, tudo bem? Vi o perfil da ${p.nome} no Google e reparei que vocês ainda não têm um site. Muita gente pesquisa "${p.segmento} em ${cidade}" antes de chamar alguém. Sou da Kriai: fazemos uma página com seus serviços, fotos e um botão direto para o seu WhatsApp, por R$ 397 e pronta no mesmo dia. Veja um exemplo: ${exemplo}. Quer um assim com a cara de vocês?`;
+}
+
+export async function registrarEnvio(placeId: string) {
+  const db = exigirSupabase();
+  const { data, error } = await db.from("prospects").select("tentativas, status").eq("place_id", placeId).maybeSingle();
+  if (error || !data) throw new Error(error?.message ?? "Lead não encontrado");
+  const agora = new Date().toISOString();
+  const { error: e2 } = await db
+    .from("prospects")
+    .update({
+      tentativas: (data.tentativas ?? 0) + 1,
+      contatado_em: agora,
+      status: data.status === "novo" ? "contatado" : data.status,
+      atualizado_em: agora,
+    })
+    .eq("place_id", placeId);
+  if (e2) throw new Error(e2.message);
+}
+
+export async function pularProspect(placeId: string) {
+  const { error } = await exigirSupabase().from("prospects").update({ pulado_em: new Date().toISOString() }).eq("place_id", placeId);
+  if (error) throw new Error(error.message);
+}

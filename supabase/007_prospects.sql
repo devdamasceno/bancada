@@ -23,3 +23,8 @@ create table if not exists prospects (
 alter table prospects enable row level security;
 create index if not exists prospects_busca_idx on prospects (segmento, local, pontuacao desc);
 create index if not exists prospects_status_idx on prospects (status);
+
+-- Modo abordagem: quantas mensagens já foram, quando foi a última e se o lead foi pulado.
+alter table prospects add column if not exists tentativas integer not null default 0;
+alter table prospects add column if not exists contatado_em timestamptz;
+alter table prospects add column if not exists pulado_em timestamptz;
