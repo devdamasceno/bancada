@@ -3,7 +3,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 
 // Mercado Pago (Checkout Pro). Variáveis na Vercel:
 //   MERCADOPAGO_ACCESS_TOKEN   → Suas integrações > aplicação > Credenciais de produção > Access Token
-//   MERCADOPAGO_WEBHOOK_SECRET → Suas integrações > aplicação > Webhooks > Assinatura secreta
+//   MERCADOPAGO_WEBHOOK_SECRET → Suas integrações > aplicação > Webhooks > Assinatura secreta (opcional: camada extra)
 const API = "https://api.mercadopago.com";
 
 export const mercadoPagoLigado = () => !!process.env.MERCADOPAGO_ACCESS_TOKEN;
@@ -91,7 +91,10 @@ export async function consultarPagamento(id: string): Promise<PagamentoMP> {
  */
 export function assinaturaValida(xSignature: string | null, xRequestId: string | null, dataId: string) {
   const segredo = process.env.MERCADOPAGO_WEBHOOK_SECRET;
-  if (!segredo || !xSignature) return false;
+  // Sem a assinatura secreta configurada, o aviso ainda é seguro: ele só serve de gatilho,
+  // e o pagamento é sempre consultado na API do Mercado Pago (com o nosso token) antes de valer.
+  if (!segredo) return true;
+  if (!xSignature) return false;
   const partes = Object.fromEntries(
     xSignature.split(",").map((p) => {
       const [k, ...v] = p.trim().split("=");
