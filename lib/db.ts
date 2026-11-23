@@ -478,9 +478,10 @@ export async function reservarGeracao(id: string) {
 }
 
 export async function liberarGeracao(id: string, obs: string) {
+  // o disparo imediato falhou: continua na fila para a passada de hora em hora
   const { error } = await exigirSupabase()
     .from("conversas")
-    .update({ geracao_disparada_em: null, site_status: "erro", site_obs: obs.slice(0, 1000) })
+    .update({ site_status: "na_fila", site_obs: obs.slice(0, 1000) })
     .eq("id", id);
   falhou("liberar a geração", error);
 }

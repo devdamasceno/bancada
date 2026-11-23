@@ -4,15 +4,16 @@ import { liberarGeracao, obterEstadoPedido, reservarGeracao } from "@/lib/db";
 import { dispararGeracao, geracaoLigada } from "@/lib/geracao";
 import { COR, botao, destinatariosAviso, emailValido, enviar, esc, moldura } from "@/lib/notificacao";
 
-/** Pagou: dispara a geração uma única vez. Sem a sessão agendada configurada, fica na fila para você gerar pelo chat. */
+/**
+ * Pagou: coloca o site na fila (site_status = 'na_fila') uma única vez.
+ * A tarefa agendada "Kriai · gerar site do pedido pago" passa de hora em hora pegando a fila.
+ * Se o disparo imediato estiver configurado (KRIAI_ROTINA_URL + KRIAI_ROTINA_TOKEN), já chama a tarefa na hora.
+ */
 export async function iniciarGeracao(id: string, base: string) {
   const p = await obterEstadoPedido(id);
   if (!p?.numero || !p.siteSlug) return;
-  if (!geracaoLigada()) {
-    console.warn("[geracao] sessão agendada não configurada: pedido fica na fila", id);
-    return;
-  }
-  if (!(await reservarGeracao(id))) return; // já disparado
+  if (!(await reservarGeracao(id))) return; // já está na fila ou foi disparado
+  if (!geracaoLigada()) return; // fica na fila para a próxima passada da tarefa
   try {
     await dispararGeracao({ conversaId: id, numero: p.numero, slug: p.siteSlug, baseUrl: base });
   } catch (err) {
@@ -46,7 +47,7 @@ export async function notificarPagamento(id: string, base: string) {
 <p style="margin:0 0 6px">${esc(f.nome ?? "Cliente")}${f.negocio ? ` · ${esc(f.negocio)}` : ""} pagou R$ ${p.valorCobrado}.</p>
 <p style="margin:0 0 6px">Endereço provisório: ${esc(provisorio ?? "—")}</p>
 <p style="margin:0 0 18px">Domínio: ${esc(linhaDominio(p.dominio, p.dominioStatus))}</p>
-<p style="margin:0 0 18px">${geracaoLigada() ? "A geração do site já foi disparada." : "A geração automática não está configurada: peça no chat do Claude para gerar este pedido."}</p>
+<p style="margin:0 0 18px">${geracaoLigada() ? "A geração do site já foi disparada." : "O site entrou na fila: a tarefa de geração pega na próxima passada (de hora em hora)."}</p>
 ${botao(`${base}/admin/${id}`, "Abrir no painel", COR.breu)}`,
         { resumo: `Pagamento aprovado do pedido ${p.numero}` },
       );
