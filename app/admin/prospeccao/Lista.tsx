@@ -282,8 +282,7 @@ export function ListaLeads({ leads: iniciais, segmentoInicial, localInicial }: {
 function Cartao({ l, agora, onEnviou, onStatus }: { l: LeadTela; agora: number; onEnviou: () => void; onStatus: (s: StatusProspect) => void }) {
   const temp = temperatura(l.pontuacao);
   const cat = categoria(l, agora);
-  const zap = l.tentativas >= 1 ? l.zapRetorno : l.zapPrimeira;
-  const rotuloZap = l.tentativas >= 1 ? "Mandar retorno" : "Chamar no WhatsApp";
+  const ativo = l.status !== "descartado" && l.status !== "cliente";
 
   return (
     <li className={`pl-item cat-${cat}`}>
@@ -341,9 +340,14 @@ function Cartao({ l, agora, onEnviou, onStatus }: { l: LeadTela; agora: number; 
         </ul>
 
         <div className="pl-acoes">
-          {zap && l.status !== "descartado" && l.status !== "cliente" && (
-            <a className="pl-botao zap" href={zap} target="_blank" rel="noopener noreferrer" onClick={onEnviou}>
-              <IcoWhats /> {rotuloZap}
+          {l.zapPrimeira && ativo && (
+            <a className="pl-botao zap" href={l.zapPrimeira} target="_blank" rel="noopener noreferrer" onClick={onEnviou}>
+              <IcoWhats /> Chamar no WhatsApp
+            </a>
+          )}
+          {l.zapRetorno && ativo && cat === "retornar" && (
+            <a className="pl-botao" href={l.zapRetorno} target="_blank" rel="noopener noreferrer" onClick={onEnviou}>
+              <IcoRetorno /> Mandar retorno
             </a>
           )}
           {l.telefone && !l.celular && (
