@@ -276,9 +276,9 @@ export function mensagemAbordagem(p: Pick<Prospect, "nome" | "segmento" | "local
   const exemplo = exemploDoSegmento(p.segmento);
   const cidade = p.local.split(",")[0].trim();
   if (etapa === "acompanhamento") {
-    return `Oi, pessoal da ${p.nome}! Passando só para deixar o exemplo que comentei: ${exemplo}. Se fizer sentido, monto o de vocês hoje mesmo. Se não for o momento, sem problema, é só me avisar que não chamo mais.`;
+    return `Oi, pessoal da ${p.nome}! Passando só para deixar o exemplo que comentei: ${exemplo}. Se fizer sentido, monto o de vocês esta semana. Se não for o momento, sem problema, é só me avisar que não chamo mais.`;
   }
-  return `Oi, tudo bem? Vi o perfil da ${p.nome} no Google e reparei que vocês ainda não têm um site. Muita gente pesquisa "${p.segmento} em ${cidade}" antes de chamar alguém. Sou da Kriai: fazemos uma página com seus serviços, fotos e um botão direto para o seu WhatsApp, por R$ 397 e pronta no mesmo dia. Veja um exemplo: ${exemplo}. Quer um assim com a cara de vocês?`;
+  return `Oi, tudo bem? Vi o perfil da ${p.nome} no Google e não achei um site de vocês por lá. Muita gente pesquisa "${p.segmento} em ${cidade}" antes de chamar alguém. Sou da Kriai: fazemos uma página com seus serviços, fotos e um botão direto para o seu WhatsApp, a partir de R$ 397 e pronta em até 3 dias. Veja um exemplo: ${exemplo}. Quer um assim com a cara de vocês?`;
 }
 
 export async function registrarEnvio(placeId: string) {
