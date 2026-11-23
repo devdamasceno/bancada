@@ -277,7 +277,7 @@ export function mensagemAbordagem(p: Pick<Prospect, "nome" | "segmento" | "local
     const exemplo = exemploDoSegmento(p.segmento);
     return `Oi, pessoal da ${p.nome}! Passando só para deixar o exemplo que comentei: ${exemplo}. Se fizer sentido, é só me chamar. Se não for o momento, sem problema!`;
   }
-  return `Olá, tudo bem? Vi o perfil da ${p.nome} no Google e reparei que vocês ainda não têm um site. Sou da Kriai: fazemos landing pages para ${p.segmento} a partir de R$ 397, prontas no mesmo dia, com botão direto para o WhatsApp de vocês. Posso te mostrar um exemplo?`;
+  return `Olá! Vi a ${p.nome} no Google e não encontrei um site de vocês. Faço landing pages para ${p.segmento} a partir de R$ 397, prontas no mesmo dia, com botão para o WhatsApp. Posso te mandar um exemplo?`;
 }
 
 export async function registrarEnvio(placeId: string) {
