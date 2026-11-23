@@ -2273,3 +2273,18 @@ a.fechar { display: block; box-sizing: border-box; text-align: center; text-deco
 }
 .prosp-atalho { display: flex; gap: 0.6rem; align-items: center; }
 .prosp-atalho a { text-decoration: none; }
+.prosp-regras {
+  list-style: none;
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--cinza);
+  background: var(--chapa);
+  border-left: 3px solid var(--fita);
+}
+.prosp-regras b { color: var(--giz); font-weight: 700; }
+.prosp-dica { margin: 0; font-size: 0.88rem; color: var(--cinza); }
+.prosp-dica a { color: var(--giz); }

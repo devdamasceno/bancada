@@ -61,14 +61,6 @@ async function Conteudo({ searchParams }: { searchParams: Busca }) {
     <>
       <FormBusca segmento={sp.segmento} local={sp.local} />
 
-      <form className="prosp-filtro" action="/admin/prospeccao">
-        <input name="segmento" defaultValue={sp.segmento ?? ""} placeholder="Filtrar segmento" />
-        <input name="local" defaultValue={sp.local ?? ""} placeholder="Filtrar local" />
-        {sp.status && <input type="hidden" name="status" value={sp.status} />}
-        <button type="submit" className="adm-pequeno">
-          Filtrar
-        </button>
-      </form>
       <nav className="adm-filtros" aria-label="Situação">
         <Link href={filtro()} aria-current={!sp.status ? "page" : undefined}>
           Todos
