@@ -16,7 +16,7 @@ export async function dispararGeracao(p: { conversaId: string; numero: string; s
     method: "POST",
     headers: {
       Authorization: `Bearer ${tokenRotina}`,
-      "anthropic-version": "2023-06-01",
+      "anthropic-version": "2026-10-21",
       "anthropic-beta": "experimental-cc-routine-2026-04-01",
       "Content-Type": "application/json",
     },

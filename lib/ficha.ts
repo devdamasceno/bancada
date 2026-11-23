@@ -14,6 +14,10 @@ export type Ficha = {
   email?: string;
   /** Domínio que a pessoa quer (ex.: barbeariaesquina.com.br). Só faz sentido para site. */
   dominio?: string;
+  /** Onde o domínio está ou vai ser registrado (Registro.br, Hostinger, GoDaddy...). Define o guia de DNS. */
+  registrador?: string;
+  /** Estrutura, layout e estilo combinados com o cliente: é o que o gerador do site segue. */
+  briefing?: string;
   observacoes?: string;
 };
 
@@ -28,14 +32,21 @@ export const CAMPOS_TEXTO = [
   "whatsapp",
   "email",
   "dominio",
+  "registrador",
+  "briefing",
   "observacoes",
 ] as const;
 export type CampoTexto = (typeof CAMPOS_TEXTO)[number];
 
-/** Campos que contam no progresso "x de 10" (domínio e observações são extras). */
+/** Campos extras: não contam no progresso "x de 10". */
+const EXTRAS = ["dominio", "registrador", "briefing", "observacoes"] as const;
+type Extra = (typeof EXTRAS)[number];
+export const CAMPOS_EXTRAS: readonly Extra[] = EXTRAS;
+
+/** Campos que contam no progresso "x de 10". */
 export const CAMPOS_PROGRESSO = [
   "servicos",
-  ...CAMPOS_TEXTO.filter((c): c is Exclude<CampoTexto, "observacoes" | "dominio"> => c !== "observacoes" && c !== "dominio"),
+  ...CAMPOS_TEXTO.filter((c): c is Exclude<CampoTexto, Extra> => !(EXTRAS as readonly string[]).includes(c)),
 ] as const;
 
 const IDS = new Set<string>(servicos.map((s) => s.id));
@@ -70,7 +81,7 @@ export function validarAtualizacao(entrada: unknown): Partial<Ficha> | null {
   for (const c of CAMPOS_TEXTO) {
     if (!(c in e)) continue;
     if (typeof e[c] !== "string") return null;
-    const v = (e[c] as string).trim().slice(0, c === "observacoes" ? 1000 : 200);
+    const v = (e[c] as string).trim().slice(0, c === "observacoes" || c === "briefing" ? 1500 : 200);
     // marcação vazada da chamada da ferramenta (ex.: "<parameter name=...>") invalida a entrada; a IA reenvia
     if (/<\/?[a-z][\w:-]*(\s[^>]*)?>/i.test(v)) return null;
     if (v) saida[c] = v;
@@ -88,3 +99,15 @@ export function mesclar(atual: Ficha, novo: Partial<Ficha>): Ficha {
 
 /** Pedido que segue sozinho: só o site de 1 página, pago na hora pelo Mercado Pago e gerado automaticamente. */
 export const pagamentoAutomatico = (f: Ficha) => f.servicos.length === 1 && f.servicos[0] === "site";
+
+/** O que falta para fechar a landing page pelo chat. Vazio = pode gerar o link de pagamento. */
+export function faltaParaFechar(f: Ficha): string[] {
+  const falta: string[] = [];
+  if (!pagamentoAutomatico(f)) falta.push("o plano precisa ser só o site de 1 página (servicos = [\"site\"])");
+  if (!f.negocio) falta.push("negocio");
+  if (!f.nome) falta.push("nome");
+  if (!f.email) falta.push("email (o link, a confirmação e o site no ar chegam por e-mail)");
+  if (!f.whatsapp) falta.push("whatsapp");
+  if (!f.briefing) falta.push("briefing (estrutura, layout e estilo combinados)");
+  return falta;
+}

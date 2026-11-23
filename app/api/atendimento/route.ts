@@ -1,16 +1,18 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { after } from "next/server";
-import { COM_FALLBACK, FERRAMENTA_FICHA, INSTRUCOES, MODELO } from "@/lib/atendente";
+import { COM_FALLBACK, FERRAMENTA_DOMINIO, FERRAMENTA_FICHA, FERRAMENTA_PAGAMENTO, INSTRUCOES, MODELO } from "@/lib/atendente";
 import { anexarMensagens, criarConversa, obterConversa, salvarFicha, type MensagemSalva, type Meta } from "@/lib/db";
-import { mesclar, validarAtualizacao, valorMinimo, type Ficha } from "@/lib/ficha";
-import { notificarNovoContato, temContato } from "@/lib/notificacao";
+import { normalizarDominio, verificarDominio } from "@/lib/dominio";
+import { fecharPedido } from "@/lib/fechamento";
+import { faltaParaFechar, mesclar, validarAtualizacao, valorMinimo, type Ficha } from "@/lib/ficha";
+import { notificarNovoContato, processarPedidoEnviado, temContato } from "@/lib/notificacao";
 
 // Vercel: dá tempo para a IA terminar a resposta.
 export const maxDuration = 60;
 
 const MAX_MENSAGENS_CLIENTE = 30; // por conversa
 const MAX_CARACTERES = 2000;
-const MAX_VOLTAS = 4; // chamadas à IA por mensagem (texto + ficha)
+const MAX_VOLTAS = 6; // chamadas à IA por mensagem (texto + ferramentas)
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // Limite simples por IP (memória do servidor; reinicia a cada deploy). Evita que um robô gaste sua conta.
@@ -30,6 +32,7 @@ const texto = (v: unknown, max: number) => (typeof v === "string" ? v.trim().sli
 export type EventoAtendimento =
   | { tipo: "texto"; delta: string }
   | { tipo: "ficha"; ficha: Ficha; valor: number }
+  | { tipo: "pagamento"; numero: string; link: string; acompanhar: string }
   | { tipo: "salvo" }
   | { tipo: "recusa" }
   | { tipo: "erro"; codigo: "servidor" | "limite" | "devagar" }
@@ -78,9 +81,11 @@ export async function POST(request: Request) {
   let fimDaConversa: () => void = () => {};
   const conversaTerminou = new Promise<void>((ok) => (fimDaConversa = ok));
   let avisoContato: Promise<unknown> | null = null;
+  let avisoPedido: Promise<unknown> | null = null;
   after(async () => {
     await conversaTerminou;
     await avisoContato;
+    await avisoPedido;
   });
 
   const corrente = new ReadableStream<Uint8Array>({
@@ -163,7 +168,7 @@ export async function POST(request: Request) {
             ...(COM_FALLBACK ? { fallbacks: "default" as const } : {}),
             system: [{ type: "text", text: INSTRUCOES, cache_control: { type: "ephemeral" } }],
             cache_control: { type: "ephemeral" },
-            tools: [FERRAMENTA_FICHA],
+            tools: [FERRAMENTA_FICHA, FERRAMENTA_DOMINIO, FERRAMENTA_PAGAMENTO],
             messages: historico,
           });
           stream.on("text", (delta) => enviar({ tipo: "texto", delta }));
@@ -206,23 +211,67 @@ export async function POST(request: Request) {
           }
 
           const resultados: Anthropic.Beta.BetaToolResultBlockParam[] = [];
-          for (const chamada of chamadas) {
-            const novo = chamada.name === "atualizar_ficha" ? validarAtualizacao(chamada.input) : null;
-            if (!novo) {
-              resultados.push({
-                type: "tool_result",
-                tool_use_id: chamada.id,
-                is_error: true,
-                content: JSON.stringify({ INVALID_JSON: JSON.stringify(chamada.input) }),
-              });
-              continue;
+          const fichaAntes = ficha;
+          // primeiro as atualizações da ficha, depois domínio e pagamento (que leem a ficha já atualizada)
+          const ordem = [...chamadas].sort((a, b) => Number(b.name === "atualizar_ficha") - Number(a.name === "atualizar_ficha"));
+          for (const chamada of ordem) {
+            if (chamada.name === "atualizar_ficha") {
+              const novo = validarAtualizacao(chamada.input);
+              if (!novo) {
+                resultados.push({
+                  type: "tool_result",
+                  tool_use_id: chamada.id,
+                  is_error: true,
+                  content: JSON.stringify({ INVALID_JSON: JSON.stringify(chamada.input) }),
+                });
+                continue;
+              }
+              ficha = mesclar(ficha, novo);
+              resultados.push({ type: "tool_result", tool_use_id: chamada.id, content: "Ficha atualizada." });
+            } else if (chamada.name === "verificar_dominio") {
+              resultados.push({ type: "tool_result", tool_use_id: chamada.id, content: await conferirDominios(chamada.input) });
+            } else if (chamada.name === "gerar_link_pagamento") {
+              const falta = faltaParaFechar(ficha);
+              if (falta.length) {
+                resultados.push({
+                  type: "tool_result",
+                  tool_use_id: chamada.id,
+                  is_error: true,
+                  content: `Ainda não dá para gerar o link. Falta: ${falta.join("; ")}.`,
+                });
+                continue;
+              }
+              try {
+                await salvarFicha(id, ficha);
+                const jaEnviado = salvo.conversa.status === "enviado";
+                const f = await fecharPedido(id, base);
+                if (!f?.link || !f.acompanhar) throw new Error("link não gerado");
+                enviar({ tipo: "pagamento", numero: f.numero, link: f.link, acompanhar: f.acompanhar });
+                if (!jaEnviado && !avisoPedido) avisoPedido = processarPedidoEnviado(id, base);
+                resultados.push({
+                  type: "tool_result",
+                  tool_use_id: chamada.id,
+                  content: `Pedido nº ${f.numero} confirmado. O botão "Pagar ${f.valor ? `R$ ${f.valor}` : ""} com Mercado Pago" já apareceu na ficha (Pix ou cartão em até 3x). Não escreva o link no texto.`,
+                });
+              } catch (err) {
+                console.error("[atendimento] pagamento", id, err);
+                resultados.push({
+                  type: "tool_result",
+                  tool_use_id: chamada.id,
+                  is_error: true,
+                  content:
+                    "O link de pagamento não pôde ser gerado agora. Peça desculpas, diga que o pedido foi registrado e que a equipe manda o link pelo WhatsApp em instantes.",
+                });
+              }
+            } else {
+              resultados.push({ type: "tool_result", tool_use_id: chamada.id, is_error: true, content: "Ferramenta desconhecida." });
             }
-            ficha = mesclar(ficha, novo);
-            resultados.push({ type: "tool_result", tool_use_id: chamada.id, content: "Ficha atualizada." });
           }
           const tinhaContato = temContato(salvo.conversa.ficha) || avisoContato !== null;
-          await salvarFicha(id, ficha);
-          enviar({ tipo: "ficha", ficha, valor: valorMinimo(ficha) });
+          if (ficha !== fichaAntes) {
+            await salvarFicha(id, ficha);
+            enviar({ tipo: "ficha", ficha, valor: valorMinimo(ficha) });
+          }
           // primeiro WhatsApp ou e-mail na conversa: avisa você por e-mail (uma vez só, controlado no banco)
           if (!tinhaContato && temContato(ficha)) avisoContato = notificarNovoContato(id, base);
 
@@ -261,4 +310,15 @@ function montarHistorico(mensagens: MensagemSalva[]): Anthropic.Beta.BetaMessage
     h.pop();
   }
   return h;
+}
+
+/** Confere os domínios pedidos pela IA (no máximo 6, em paralelo) e devolve um resumo para ela. */
+async function conferirDominios(entrada: unknown) {
+  const lista = Array.isArray((entrada as { dominios?: unknown })?.dominios) ? (entrada as { dominios: unknown[] }).dominios : [];
+  const dominios = [...new Set(lista.map((d) => normalizarDominio(typeof d === "string" ? d : "")).filter((d): d is string => !!d))].slice(0, 6);
+  if (!dominios.length) return "Nenhum domínio válido. Envie endereços completos, como nome.com.br.";
+  const r = await Promise.all(dominios.map(verificarDominio));
+  return r
+    .map((d) => `${d.dominio}: ${d.status === "livre" ? "LIVRE" : d.status === "ocupado" ? "ocupado (já registrado)" : "não deu para conferir agora"}`)
+    .join("\n");
 }

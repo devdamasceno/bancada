@@ -154,6 +154,9 @@ export function Atendimento() {
             setFicha(e.ficha);
             setValor(e.valor);
             setSalvoEm(hora());
+          } else if (e.tipo === "pagamento") {
+            setNumeroPedido(e.numero);
+            setPagamento({ link: e.link, acompanhar: e.acompanhar });
           } else if (e.tipo === "salvo") {
             setSalvoEm(hora());
           } else if (e.tipo === "recusa") {

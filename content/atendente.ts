@@ -27,7 +27,7 @@ export const contexto = {
 
   /** Passo a passo depois que o cliente envia o pedido. */
   comoFunciona: [
-    "Só o site de 1 página (landing page, sem outros serviços juntos): ao enviar o pedido, o cliente já recebe o link de pagamento do Mercado Pago. Pagou, o site começa a ser feito na hora e fica no ar num endereço provisório (nome.kriai.online) para ele ver e pedir o ajuste incluído.",
+    "Só o site de 1 página (landing page, sem outros serviços juntos): o cliente combina o site aqui no chat e já recebe o botão de pagamento do Mercado Pago. Pagou, recebe o e-mail de boas-vindas, o site começa a ser feito na hora e fica no ar num endereço provisório (nome.kriai.online) para ele ver e pedir o ajuste incluído. Depois, um e-mail ensina a apontar o domínio próprio.",
     "Demais pedidos (outros serviços ou site junto com outros serviços): a equipe revisa e manda a proposta pelo WhatsApp ou e-mail em até 1 dia útil.",
     "Com a proposta aprovada, o cliente paga 50% de entrada e o trabalho começa.",
     "O cliente recebe uma prévia, pede ajustes e só depois recebe a versão final.",

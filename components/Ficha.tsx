@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ficha as t, formatarReais, servicos } from "@/content/site";
-import { CAMPOS_PROGRESSO, CAMPOS_TEXTO, camposPreenchidos, prontaParaEnviar, type Ficha as TFicha } from "@/lib/ficha";
+import { CAMPOS_EXTRAS, CAMPOS_PROGRESSO, CAMPOS_TEXTO, camposPreenchidos, prontaParaEnviar, type Ficha as TFicha } from "@/lib/ficha";
 
 type Props = {
   ficha: TFicha;
@@ -21,6 +21,11 @@ type Props = {
 
 export function Ficha(p: Props) {
   const [aberta, setAberta] = useState(false);
+  // link de pagamento gerado no chat: abre a ficha (no celular ela fica recolhida) para o botão aparecer
+  const temPagamento = !!p.pagamento;
+  useEffect(() => {
+    if (temPagamento) setAberta(true);
+  }, [temPagamento]);
   const anterior = useRef(p.ficha);
   const [novos, setNovos] = useState<string[]>([]);
 
@@ -40,7 +45,7 @@ export function Ficha(p: Props) {
 
   const nomes = servicos.filter((s) => p.ficha.servicos.includes(s.id)).map((s) => s.nome);
   const valorDe = (c: string) => (c === "servicos" ? nomes.join(", ") : p.ficha[c as keyof TFicha]) as string | undefined;
-  const campos = [...CAMPOS_PROGRESSO, "dominio", "observacoes"] as const;
+  const campos = [...CAMPOS_PROGRESSO, ...CAMPOS_EXTRAS] as const;
   const pronta = prontaParaEnviar(p.ficha);
 
   return (
@@ -70,7 +75,7 @@ export function Ficha(p: Props) {
       <dl id="ficha-campos">
         {campos.map((c) => {
           const v = valorDe(c);
-          if ((c === "observacoes" || c === "dominio") && !v) return null;
+          if ((CAMPOS_EXTRAS as readonly string[]).includes(c) && !v) return null;
           const classes = ["campo", `campo-${c}`, v ? "ok" : "", novos.includes(c) ? "novo" : ""].join(" ");
           return (
             <div key={c} className={classes}>

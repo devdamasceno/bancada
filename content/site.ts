@@ -196,6 +196,8 @@ export const ficha = {
     whatsapp: "WhatsApp",
     email: "E-mail",
     dominio: "Domínio",
+    registrador: "Onde registrou",
+    briefing: "Site combinado",
     observacoes: "Observações",
   },
 };
