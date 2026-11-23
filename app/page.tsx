@@ -8,6 +8,7 @@ import { BarraDeCores, MarcasDeCorte } from "@/components/Grafica";
 import { Modelos } from "@/components/Modelos";
 import { Topo } from "@/components/Marca";
 import { Rodape } from "@/components/Rodape";
+import { InstagramIcone, RoboFundo, WhatsAppIcone } from "@/components/Robo";
 
 const real = (v: string) => !!v && !v.includes("[SUBSTITUIR]");
 
@@ -78,12 +79,16 @@ function dadosEstruturados(duvidas: { pergunta: string; resposta: string }[]) {
   }).replace(/</g, "\\u003c");
 }
 
+const instagram = `https://instagram.com/${marca.instagram}`;
+const whatsapp = `https://wa.me/55${marca.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(t.whatsappMensagem)}`;
+
 function Hero() {
   return (
     <section className="largura" aria-labelledby="titulo">
       <div className="hero">
+        <RoboFundo className="hero-robo" />
         <MarcasDeCorte />
-        <div>
+        <div className="hero-texto">
           <h1 id="titulo" className="titulo-hero">
             {t.titulo}
           </h1>
@@ -99,6 +104,14 @@ function Hero() {
             </Link>
           </div>
           <p className="nota">{t.nota}</p>
+          <p className="hero-siga">
+            <a href={instagram} target="_blank" rel="noopener noreferrer">
+              <InstagramIcone /> {t.siga.curto} <b>@{marca.instagram}</b>
+            </a>
+            <a href={whatsapp} target="_blank" rel="noopener noreferrer">
+              <WhatsAppIcone /> {marca.whatsapp}
+            </a>
+          </p>
         </div>
 
         <div
@@ -193,6 +206,10 @@ function ComoFunciona({ duvidas }: { duvidas: { pergunta: string; resposta: stri
           ))}
         </ol>
       </div>
+      <div className="dividido">
+        <div className="dividido-lado" />
+        <p className="nota">{t.comoFunciona.nota}</p>
+      </div>
       {duvidas.length > 0 && (
         <div className="dividido duvidas-bloco">
           <div className="dividido-lado">
@@ -214,6 +231,31 @@ function ComoFunciona({ duvidas }: { duvidas: { pergunta: string; resposta: stri
   );
 }
 
+function Siga() {
+  return (
+    <section className="secao largura" aria-labelledby="t-siga">
+      <div className="siga">
+        <RoboFundo className="siga-robo" />
+        <div>
+          <h2 id="t-siga" className="titulo-xl">
+            {t.siga.titulo}
+          </h2>
+          <p className="apoio">{t.siga.texto}</p>
+        </div>
+        <div className="siga-acoes">
+          <a className="btn" href={instagram} target="_blank" rel="noopener noreferrer">
+            <InstagramIcone /> {t.siga.instagram}
+          </a>
+          <a className="btn btn-whats" href={whatsapp} target="_blank" rel="noopener noreferrer">
+            <WhatsAppIcone /> {t.siga.whatsapp}
+          </a>
+          <span className="nota">{marca.whatsapp}</span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
   const duvidas = contexto.perguntasFrequentes.filter((p) => real(p.resposta));
   return (
@@ -226,6 +268,7 @@ export default function Home() {
         <Campanhas />
         <Modelos />
         <ComoFunciona duvidas={duvidas} />
+        <Siga />
         <Fechamento />
       </main>
       <Rodape />

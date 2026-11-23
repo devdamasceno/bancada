@@ -7,10 +7,18 @@ export const landing = {
   subtitulo:
     "Site, vídeo curto, Perfil no Google e logo para barbearias, confeitarias, clínicas e comércios de todo o Brasil.",
   subtituloDestaque:
-    "A Kria, nossa assistente de IA, mostra o preço em 2 minutos, e você paga a primeira metade só se aprovar a proposta.",
+    "Com a Kria, nossa assistente de IA, você combina a sua landing page no chat, paga com Pix ou cartão e o site fica no ar no mesmo dia, de forma 100% automática.",
   botao: "Montar meu plano grátis",
   botaoSecundario: "Ver campanhas",
-  nota: "Grátis e sem cadastro. Atendimento 100% online, a partir de Juiz de Fora (MG).",
+  nota: "Grátis e sem cadastro. Atendimento automatizado a qualquer hora, a partir de Juiz de Fora (MG).",
+  siga: {
+    titulo: "Siga a Kriai",
+    texto:
+      "Dicas para vender mais na internet, bastidores dos sites que a nossa IA cria e novidades em primeira mão. Siga no Instagram e fale com a gente pelo WhatsApp.",
+    instagram: "Seguir @kriai.online",
+    whatsapp: "Chamar no WhatsApp",
+    curto: "Siga a gente no Instagram",
+  },
   pecasRotulo: "Peças demonstrativas",
   whatsappMensagem: "Olá, Kriai! Vim pelo site e quero conversar sobre a divulgação do meu negócio.",
 
@@ -26,7 +34,7 @@ export const landing = {
     texto:
       "Preço de entrada de cada serviço. Dá para começar por um e somar os outros depois. Projeto personalizado recebe orçamento sem compromisso.",
     rodape:
-      "Pix ou cartão em até 3x. Domínio e hospedagem do site são à parte e vêm explicados na proposta.",
+      "Pix ou cartão em até 3x pelo Mercado Pago. A landing page é paga na hora e já sai hospedada em seunegocio.kriai.online. O domínio próprio (.com.br) fica no seu nome no Registro.br, cerca de R$ 40 por ano.",
   },
 
   campanhas: {
@@ -45,22 +53,23 @@ export const landing = {
     titulo: "Do primeiro oi ao site no ar",
     passos: [
       {
-        titulo: "Você conversa com a Kria",
-        texto: "Ela entende o seu negócio, monta o plano e mostra o preço. Leva uns 2 minutos.",
+        titulo: "Você combina o site com a Kria",
+        texto: "Conte do seu negócio. Ela propõe as seções, o visual e os textos, mostra exemplos e confere se o seu domínio está livre.",
       },
       {
-        titulo: "A proposta chega em até 1 dia útil",
-        texto: "Uma pessoa da equipe revisa o pedido e manda a proposta pelo WhatsApp ou e-mail.",
+        titulo: "Paga na hora, sem burocracia",
+        texto: "Pix ou cartão em até 3x pelo Mercado Pago. O e-mail de boas-vindas chega assim que o pagamento é aprovado.",
       },
       {
-        titulo: "Você aprova e paga 50%",
-        texto: "O trabalho só começa depois que você concorda com o que vai receber e quanto custa.",
+        titulo: "A IA cria e publica o site",
+        texto: "Nossa IA monta a página com o que vocês combinaram e coloca no ar em seunegocio.kriai.online. Você recebe o link por e-mail.",
       },
       {
-        titulo: "Prévia, ajuste e entrega",
-        texto: "Você vê antes, pede o ajuste e só então paga o restante e recebe a versão final.",
+        titulo: "Ajuste e domínio próprio",
+        texto: "Peça a rodada de ajustes incluída e siga o passo a passo que mandamos para colocar o site no seu domínio.",
       },
     ],
+    nota: "Vídeo, logo, Google ou um site maior? A Kria anota tudo e a equipe manda a proposta sem compromisso.",
   },
 
   duvidas: { titulo: "Perguntas que todo mundo faz" },
@@ -76,7 +85,7 @@ export const landing = {
     contato: "Contato",
     privacidade: "Privacidade",
     cookies: "Preferências de cookies",
-    assinatura: "Feito com IA e revisado por gente.",
+    assinatura: "Atendimento e criação 100% automatizados, acompanhados pela nossa equipe.",
   },
 };
 

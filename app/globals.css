@@ -2180,3 +2180,71 @@
 .pedido-etapas li { padding: 10px 14px; border: 1px solid var(--risco); color: var(--cinza); }
 .pedido-etapas li.ok { color: inherit; font-weight: 700; border-color: currentColor; }
 a.fechar { display: block; box-sizing: border-box; text-align: center; text-decoration: none; }
+
+/* ---------- robô de fundo (seção principal) e "Siga a Kriai" ---------- */
+.hero { isolation: isolate; overflow: hidden; }
+.hero-robo {
+  position: absolute;
+  z-index: -1;
+  left: 40%;
+  top: 36%;
+  width: min(600px, 48vw);
+  height: auto;
+  transform: translateY(-50%) rotate(-6deg);
+  opacity: 0.3;
+  pointer-events: none;
+}
+.hero-texto { position: relative; }
+.hero-siga {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin: 18px 0 0;
+  font-size: 0.95rem;
+}
+.hero-siga a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--tinta, #141414);
+  text-decoration: none;
+  border-bottom: 2px solid var(--amarelo);
+  padding-bottom: 2px;
+}
+.hero-siga a:hover { border-color: var(--magenta); }
+.hero-siga b { font-weight: 700; }
+.btn svg { margin-right: 8px; flex: none; }
+.btn-whats { background: #128c4a; }
+.btn-whats:hover { background: #0e7040; }
+.siga {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  gap: clamp(20px, 4vw, 48px);
+  align-items: center;
+  padding: clamp(28px, 5vw, 56px);
+  border: 2px solid var(--tinta, #141414);
+}
+.siga-robo {
+  position: absolute;
+  z-index: -1;
+  right: -60px;
+  bottom: -90px;
+  width: 340px;
+  height: auto;
+  opacity: 0.2;
+  transform: rotate(8deg);
+  pointer-events: none;
+}
+.siga .apoio { margin-top: 14px; max-width: 52ch; }
+.siga-acoes { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+@media (max-width: 900px) {
+  .hero-robo { right: -18%; top: 34%; width: 110vw; opacity: 0.14; }
+  .siga { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-robo { animation: robo-flutua 9s ease-in-out infinite alternate; }
+  @keyframes robo-flutua { to { transform: translateY(-53%) rotate(-3deg); } }
+}

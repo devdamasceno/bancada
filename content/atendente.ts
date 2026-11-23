@@ -10,7 +10,7 @@ export const contexto = {
 
   /** Quem é o estúdio, em 2 ou 3 frases. */
   sobre:
-    "Estúdio criado por Sergio Damasceno que usa inteligência artificial para entregar site, vídeo, imagem e presença no Google em poucos dias e por um preço que pequeno negócio consegue pagar. Cada projeto passa por revisão humana antes da entrega.",
+    "Estúdio criado por Sergio Damasceno que usa inteligência artificial para entregar site, vídeo, imagem e presença no Google em poucos dias e por um preço que pequeno negócio consegue pagar. A landing page é combinada com a Kria, paga na hora e criada e publicada automaticamente pela IA; a equipe acompanha as entregas e cuida dos ajustes e dos projetos maiores.",
 
   /** Para quem o estúdio trabalha. */
   publico: "Pequenos negócios e profissionais autônomos: comércio de bairro, alimentação, beleza, saúde, serviços.",
@@ -52,7 +52,7 @@ export const contexto = {
     {
       pergunta: "Vocês usam IA? Fica com cara de robô?",
       resposta:
-        "Usamos IA para ganhar velocidade e baixar o preço, mas todo trabalho é revisado e ajustado por uma pessoa antes da entrega.",
+        "Usamos IA de ponta a ponta para ganhar velocidade e baixar o preço: a landing page é criada e publicada automaticamente, seguindo o que você combinou com a Kria, com identidade própria para o seu negócio. A equipe acompanha cada entrega e você tem 1 rodada de ajustes incluída.",
     },
     {
       pergunta: "E se eu não gostar?",
