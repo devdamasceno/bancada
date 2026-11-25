@@ -272,12 +272,20 @@ export function exemploDoSegmento(segmento: string) {
   return "https://www.kriai.online/portfolio";
 }
 
-export function mensagemAbordagem(p: Pick<Prospect, "nome" | "segmento" | "local">, etapa: "primeira" | "acompanhamento") {
+export function mensagemAbordagem(
+  p: Pick<Prospect, "nome" | "segmento" | "local"> & { instagram?: string | null },
+  etapa: "primeira" | "acompanhamento",
+) {
   if (etapa === "acompanhamento") {
     const exemplo = exemploDoSegmento(p.segmento);
-    return `Oi, pessoal da ${p.nome}! Passando só para deixar o exemplo que comentei: ${exemplo}. Se fizer sentido, é só me chamar. Se não for o momento, sem problema!`;
+    return `Oi, pessoal da ${p.nome}! Passando só pra deixar o exemplo que comentei: ${exemplo}. Se fizer sentido, é só me chamar. Se não for o momento, sem problema!`;
   }
-  return `Olá! Vi a ${p.nome} no Google e não encontrei um site de vocês. Faço landing pages para ${p.segmento} a partir de R$ 397, prontas no mesmo dia, com botão para o WhatsApp. Posso te mandar um exemplo?`;
+  const oferta =
+    "A gente monta uma página rápida pra isso, com botão pro WhatsApp, a partir de R$ 397 e pronta no mesmo dia. Quer que eu te mostre como fica na prática?";
+  if (p.instagram) {
+    return `Oi! Vi a ${p.nome} no Google e no Instagram e notei que não tem um lugar onde o cliente veja serviços, horários e fotos antes de chamar. ${oferta}`;
+  }
+  return `Oi! Vi a ${p.nome} no Google e não encontrei um site de vocês, um lugar onde o cliente veja serviços, horários e fotos antes de chamar. ${oferta}`;
 }
 
 export async function registrarEnvio(placeId: string) {
