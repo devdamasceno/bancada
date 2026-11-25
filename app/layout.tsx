@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     title: seo.titulo,
-    description: seo.descricao,
+    description: seo.descricaoCompartilhar,
     url: "/",
     siteName: marca.nome,
     locale: "pt_BR",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: seo.titulo,
-    description: seo.descricao,
+    description: seo.descricaoCompartilhar,
   },
   robots: {
     index: true,

@@ -5,6 +5,8 @@ export const seo = {
   titulo: "Kriai: site, vídeo, logo e Google para pequenos negócios",
   descricao:
     "Criação de site profissional, vídeo para Reels, logo e perfil no Google para pequenos negócios. Combine a sua landing page com a nossa IA, pague com Pix ou cartão e receba o site no ar no mesmo dia.",
+  /** Descrição curta que aparece ao compartilhar o link (WhatsApp, Instagram, Facebook). */
+  descricaoCompartilhar: "Site, vídeo, logo e Google para pequenos negócios. Landing page no ar no mesmo dia, com Pix ou cartão em até 3x.",
   chamadaImagem: "Propaganda de agência, no tamanho do seu negócio.",
   apoioImagem: "Site, vídeo, logo e Google. Landing page no ar no mesmo dia.",
   /** Área atendida (o serviço é 100% online). */
