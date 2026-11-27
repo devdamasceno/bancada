@@ -39,9 +39,6 @@ export function Rodape() {
                 </li>
               ))}
               <li>
-                <Link href="/criacao-de-sites-juiz-de-fora">Criação de sites em Juiz de Fora</Link>
-              </li>
-              <li>
                 <Link href="/privacidade">{t.rodape.privacidade}</Link>
               </li>
               <li>
