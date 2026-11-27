@@ -35,7 +35,17 @@ function dadosEstruturados(duvidas: { pergunta: string; resposta: string }[]) {
       logo: `${url}/icon.svg`,
       image: `${url}/opengraph-image`,
       description: seo.descricao,
-      areaServed: { "@type": "Country", name: seo.area },
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: seo.cidade.nome,
+        addressRegion: seo.cidade.estado,
+        addressCountry: "BR",
+      },
+      areaServed: [
+        { "@type": "City", name: seo.cidade.nome, containedInPlace: { "@type": "State", name: seo.cidade.estadoNome } },
+        { "@type": "Country", name: seo.area },
+      ],
+      sameAs: [`https://instagram.com/${marca.instagram}`],
       priceRange: `${formatarReais(Math.min(...servicos.map((s) => s.aPartirDe)))}+`,
       ...(real(marca.email) ? { email: marca.email } : {}),
       ...(marca.whatsapp
