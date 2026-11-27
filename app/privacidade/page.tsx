@@ -9,6 +9,14 @@ export const metadata: Metadata = {
   title: "Privacidade e cookies",
   description: `Como ${marca.nome} coleta, usa e guarda seus dados.`,
   alternates: { canonical: "/privacidade" },
+  openGraph: {
+    title: "Privacidade e cookies",
+    description: `Como ${marca.nome} coleta, usa e guarda seus dados.`,
+    url: "/privacidade",
+    siteName: "Kriai",
+    locale: "pt_BR",
+    type: "website",
+  },
 };
 
 // [SUBSTITUIR] Revise este texto com um advogado antes de publicar.

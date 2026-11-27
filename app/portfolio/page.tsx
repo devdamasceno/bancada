@@ -9,6 +9,14 @@ export const metadata: Metadata = {
   description:
     "Landing pages e campanhas que a Kriai criou para pequenos negócios, e modelos de site por segmento.",
   alternates: { canonical: "/portfolio" },
+  openGraph: {
+    title: "Campanhas",
+    description: "Landing pages e campanhas que a Kriai criou para pequenos negócios, e modelos de site por segmento.",
+    url: "/portfolio",
+    siteName: "Kriai",
+    locale: "pt_BR",
+    type: "website",
+  },
 };
 
 export default function Portfolio() {

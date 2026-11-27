@@ -7,6 +7,14 @@ export const metadata: Metadata = {
   description:
     "Orçamento de site, vídeo, logo e Google na hora: conte o que você vende e em 2 minutos a Kria, assistente de IA, monta o plano e mostra quanto custa.",
   alternates: { canonical: "/conversa" },
+  openGraph: {
+    title: "Conversar com a Kria",
+    description: "Orçamento de site, vídeo, logo e Google na hora: conte o que você vende e em 2 minutos a Kria, assistente de IA, monta o plano e mostra quanto custa.",
+    url: "/conversa",
+    siteName: "Kriai",
+    locale: "pt_BR",
+    type: "website",
+  },
 };
 
 // O chat. Os botões da página inicial trazem para cá; anúncios também podem apontar direto para /conversa.

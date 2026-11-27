@@ -2,9 +2,9 @@
 // Dica: título com até ~60 caracteres e descrição com até ~155, com as palavras que o cliente digita na busca.
 
 export const seo = {
-  titulo: "Kriai: site, vídeo, logo e Google para pequenos negócios",
+  titulo: "Criação de sites para pequenos negócios | Kriai",
   descricao:
-    "Criação de site profissional, vídeo para Reels, logo e perfil no Google para pequenos negócios. Combine a sua landing page com a nossa IA, pague com Pix ou cartão e receba o site no ar no mesmo dia.",
+    "Criação de sites para pequenos negócios: landing page com WhatsApp a partir de R$ 397, no ar no mesmo dia. Também vídeo, logo e Perfil no Google.",
   /** Descrição curta que aparece ao compartilhar o link (WhatsApp, Instagram, Facebook). */
   descricaoCompartilhar: "Site, vídeo, logo e Google para pequenos negócios. Landing page no ar no mesmo dia, com Pix ou cartão em até 3x.",
   chamadaImagem: "Propaganda de agência, no tamanho do seu negócio.",

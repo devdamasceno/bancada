@@ -38,6 +38,16 @@ const nextConfig: NextConfig = {
       ],
     };
   },
+  // Endereços da Vercel (estudiokriai.vercel.app e previews) não entram no Google: só www.kriai.online.
+  async headers() {
+    return [
+      {
+        source: "/:caminho*",
+        has: [{ type: "host", value: "(?<vercel>.*)\\.vercel\\.app" }],
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+    ];
+  },
   // Endereço oficial com www: quem digitar kriai.online (sem www) vai para www.kriai.online, mantendo o caminho.
   async redirects() {
     return [
