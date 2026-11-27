@@ -169,6 +169,24 @@ export const modelos = [
       credito: "https://pizzaria.kriai.online",
     },
   },
+  {
+    id: "corretor",
+    rotulo: "Corretor de imóveis",
+    legenda:
+      "Galeria de imóveis com fotos, filtro de comprar ou alugar e painel para o corretor cadastrar tudo sozinho. O interesse chega no WhatsApp com todos os dados do imóvel.",
+    titulo: "Marina Duarte Imóveis",
+    link: "https://corretor.kriai.online",
+    rotuloLink: "Ver o modelo no ar",
+    precos: [],
+    texto:
+      "Casas, apartamentos, salas e terrenos para comprar ou alugar. Visita marcada pelo WhatsApp.",
+    botao: "Agendar visita",
+    foto: {
+      src: "/modelos/corretor-modelo.jpg",
+      alt: "Modelo de site Marina Duarte Imóveis: título Casa, apartamento ou sala em Juiz de Fora, ao lado de uma placa vermelha de Vende e Aluga pendurada",
+      credito: "https://corretor.kriai.online",
+    },
+  },
 ] as const;
 
 /**
