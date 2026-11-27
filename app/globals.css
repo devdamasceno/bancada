@@ -2391,3 +2391,37 @@ a.fechar { display: block; box-sizing: border-box; text-align: center; text-deco
   .pl-status label { flex: 1 1 140px; display: grid; }
 }
 @media (prefers-reduced-motion: reduce) { .pl-abas button { transition: none; } }
+
+/* Hero em amarelo (cartaz): só o topo da página inicial */
+.hero {
+  background-color: var(--amarelo);
+  background-image: radial-gradient(rgba(20, 20, 20, 0.07) 1.2px, transparent 1.3px);
+  background-size: 14px 14px;
+}
+.hero .titulo-hero { font-size: clamp(2.9rem, 6.6vw, 6rem); text-wrap: balance; }
+.hero .titulo-hero mark {
+  background: var(--tinta, #141414);
+  color: var(--amarelo);
+  padding: 0 0.08em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.hero-selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 7px 14px;
+  background: var(--tinta, #141414);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.hero-selo i { width: 8px; height: 8px; border-radius: 50%; background: var(--amarelo); }
+.hero .nota { color: #3d3d3d; }
+.hero .link { text-decoration-color: var(--magenta); }
+.hero .k-grande .k-y { color: var(--tinta, #141414); opacity: 0.9; }
+.hero .gcard { box-shadow: 10px 10px 0 var(--magenta); }
+.hero-siga a { border-bottom-color: var(--tinta, #141414); }

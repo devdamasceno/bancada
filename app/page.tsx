@@ -89,15 +89,19 @@ function Hero() {
         <RoboFundo className="hero-robo" />
         <MarcasDeCorte />
         <div className="hero-texto">
+          <p className="hero-selo">
+            <i aria-hidden="true" />
+            {t.selo}
+          </p>
           <h1 id="titulo" className="titulo-hero">
-            {t.titulo}
+            {t.titulo} <mark>{t.tituloMarca}</mark>
           </h1>
           <p className="hero-sub">
             {t.subtitulo} <strong>{t.subtituloDestaque}</strong>
           </p>
           <div className="acoes">
             <Link className="btn" href="/conversa">
-              {t.botao}
+              {t.botaoHero}
             </Link>
             <Link className="link" href="/portfolio">
               {t.botaoSecundario}

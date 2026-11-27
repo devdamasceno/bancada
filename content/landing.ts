@@ -3,14 +3,17 @@
 // Itens com [SUBSTITUIR] precisam de dado real antes de publicar.
 
 export const landing = {
-  titulo: "Propaganda de agência, no tamanho do seu negócio.",
+  selo: "Sites para pequenos negócios",
+  titulo: "Quando o cliente procurar, ele vai",
+  tituloMarca: "achar você.",
   subtitulo:
-    "Site, vídeo curto, Perfil no Google e logo para barbearias, confeitarias, clínicas e comércios de todo o Brasil.",
-  subtituloDestaque:
-    "Com a Kria, nossa assistente de IA, você combina a sua landing page no chat, paga com Pix ou cartão e o site fica no ar no mesmo dia, de forma 100% automática.",
+    "Site com botão de WhatsApp, Perfil no Google e vídeos curtos para pequenos negócios de todo o Brasil.",
+  subtituloDestaque: "Você vê o preço na tela e seu site fica no ar no mesmo dia.",
+  // botão da seção final ("Fechamento"); o do topo é botaoHero
   botao: "Montar meu plano grátis",
-  botaoSecundario: "Ver campanhas",
-  nota: "Grátis e sem cadastro. Atendimento automatizado a qualquer hora, a partir de Juiz de Fora (MG).",
+  botaoHero: "Montar meu site",
+  botaoSecundario: "Ver modelos",
+  nota: "Grátis e sem cadastro para montar o plano · Pix ou cartão em até 3x",
   siga: {
     titulo: "Siga a Kriai",
     texto:
