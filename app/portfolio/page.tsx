@@ -13,10 +13,12 @@ export const metadata: Metadata = {
     title: "Campanhas",
     description: "Landing pages e campanhas que a Kriai criou para pequenos negócios, e modelos de site por segmento.",
     url: "/portfolio",
+    images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
     siteName: "Kriai",
     locale: "pt_BR",
     type: "website",
   },
+  twitter: { card: "summary_large_image", title: "Campanhas", description: "Landing pages e campanhas que a Kriai criou para pequenos negócios, e modelos de site por segmento." },
 };
 
 export default function Portfolio() {

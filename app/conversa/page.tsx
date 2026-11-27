@@ -11,10 +11,12 @@ export const metadata: Metadata = {
     title: "Conversar com a Kria",
     description: "Orçamento de site, vídeo, logo e Google na hora: conte o que você vende e em 2 minutos a Kria, assistente de IA, monta o plano e mostra quanto custa.",
     url: "/conversa",
+    images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
     siteName: "Kriai",
     locale: "pt_BR",
     type: "website",
   },
+  twitter: { card: "summary_large_image", title: "Conversar com a Kria", description: "Orçamento de site, vídeo, logo e Google na hora: conte o que você vende e em 2 minutos a Kria, assistente de IA, monta o plano e mostra quanto custa." },
 };
 
 // O chat. Os botões da página inicial trazem para cá; anúncios também podem apontar direto para /conversa.

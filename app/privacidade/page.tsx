@@ -13,10 +13,12 @@ export const metadata: Metadata = {
     title: "Privacidade e cookies",
     description: `Como ${marca.nome} coleta, usa e guarda seus dados.`,
     url: "/privacidade",
+    images: [{ url: "/opengraph-image.png", width: 1200, height: 630 }],
     siteName: "Kriai",
     locale: "pt_BR",
     type: "website",
   },
+  twitter: { card: "summary_large_image", title: "Privacidade e cookies", description: `Como ${marca.nome} coleta, usa e guarda seus dados.` },
 };
 
 // [SUBSTITUIR] Revise este texto com um advogado antes de publicar.
